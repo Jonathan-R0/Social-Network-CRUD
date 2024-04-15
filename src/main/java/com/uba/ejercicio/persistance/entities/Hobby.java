@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Hobbies {
+public class Hobbie {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
