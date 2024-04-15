@@ -3,7 +3,6 @@ package com.uba.ejercicio.controllers;
 import com.uba.ejercicio.dto.GenderCreationDto;
 import com.uba.ejercicio.services.GenderService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
