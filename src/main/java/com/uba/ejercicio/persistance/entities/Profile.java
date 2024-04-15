@@ -31,7 +31,7 @@ public class Profile {
     private Gender gender;
 
     @OneToMany
-    private List<Hobbies> hobbies; // TODO delete hobbies when deleting profile
+    private List<Hobby> hobbies; // TODO delete hobbies when deleting profile
 
     @OneToOne
     private User user;
