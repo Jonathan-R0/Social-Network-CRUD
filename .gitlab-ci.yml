@@ -1,0 +1,29 @@
+image: maven:3.8.3-openjdk-17-slim
+
+stages:
+  - build
+  - test
+
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+  DATABASE_URL: "jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE"
+
+cache:
+  paths:
+    - .m2/repository/
+
+before_script:
+  - mvn clean install -DskipTests=true
+
+build:
+  stage: build
+  script:
+    - mvn package -DskipTests=true --file pom.xml
+  artifacts:
+    paths:
+      - target/*.jar
+
+test:
+  stage: test
+  script:
+    - mvn test
