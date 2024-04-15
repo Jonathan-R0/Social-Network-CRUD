@@ -12,6 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@Table
 public class Profile {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

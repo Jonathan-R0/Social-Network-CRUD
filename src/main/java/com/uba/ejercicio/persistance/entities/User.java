@@ -1,6 +1,5 @@
 package com.uba.ejercicio.persistance.entities;
 
-import com.uba.ejercicio.persistance.entities.Profile;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@Table
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
