@@ -24,6 +24,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(
                 User.builder()
                     .email(user.getEmail())
+                    .role(user.getRole())
                     .password(passwordEncoder.encode(user.getPassword()))
                     .build()
         );
