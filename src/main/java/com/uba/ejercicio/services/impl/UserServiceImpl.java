@@ -1,6 +1,7 @@
 package com.uba.ejercicio.services.impl;
 
 import com.uba.ejercicio.dto.UserDto;
+import com.uba.ejercicio.exceptions.UnavailableRoleException;
 import com.uba.ejercicio.persistance.entities.User;
 import com.uba.ejercicio.persistance.repositories.UserRepository;
 import com.uba.ejercicio.services.UserService;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Set;
 
 @Service
 @NoArgsConstructor
@@ -26,8 +28,11 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
+    private static final Set<String> VALID_ROLES = Set.of("ADMIN", "USER");
+
     @Override
     public User createUser(UserDto user) {
+        if (!VALID_ROLES.contains(user.getRole())) throw new UnavailableRoleException(user.getRole());
         return userRepository.save(
                 User.builder()
                     .email(user.getEmail())

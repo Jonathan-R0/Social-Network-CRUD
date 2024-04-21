@@ -1,6 +1,7 @@
 package com.uba.ejercicio.services;
 
 import com.uba.ejercicio.dto.UserDto;
+import com.uba.ejercicio.exceptions.UnavailableRoleException;
 import com.uba.ejercicio.persistance.entities.User;
 import com.uba.ejercicio.persistance.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 @SpringBootTest
 public class UserServiceTest {
@@ -25,6 +27,8 @@ public class UserServiceTest {
         userRepository.deleteAll();
     }
 
+    private static final Set<String> VALID_ROLES = Set.of("ADMIN", "USER");
+
     @Test
     public void testGetUserByEmailDoesNotReturnAnythingWhenNoUsersArePresent() {
         Assertions.assertThrows(NoSuchElementException.class, () -> userService.getUserByEmail("test"));
@@ -33,7 +37,7 @@ public class UserServiceTest {
     @Test
     public void testGetUserByEmailDoesReturnOneResultWhenOneUserIsPresent() {
         String exampleMail = "test@example.com";
-        userService.createUser(UserDto.builder().email(exampleMail).password("password").build());
+        userService.createUser(UserDto.builder().email(exampleMail).password("password").role("ADMIN").build());
         User result = userService.getUserByEmail(exampleMail);
         Assertions.assertNotNull(result);
         Assertions.assertEquals(exampleMail, result.getEmail());
@@ -42,7 +46,7 @@ public class UserServiceTest {
     @Test
     public void testCreateUserCreatesUser() {
         String exampleMail = "test@example.com";
-        UserDto dto = UserDto.builder().email(exampleMail).password("password").build();
+        UserDto dto = UserDto.builder().email(exampleMail).password("password").role("ADMIN").build();
         User result = userService.createUser(dto);
         User fetchedData = userRepository.findByEmail(exampleMail).orElseThrow();
         Assertions.assertNotNull(result);
@@ -52,10 +56,42 @@ public class UserServiceTest {
     @Test
     public void testDeleteUserByEmailDeletesUser() {
         String exampleMail = "test@example.com";
-        UserDto dto = UserDto.builder().email(exampleMail).password("password").build();
+        UserDto dto = UserDto.builder().email(exampleMail).password("password").role("ADMIN").build();
         userService.createUser(dto);
         userService.deleteUserByEmail(exampleMail);
         Assertions.assertThrows(NoSuchElementException.class, () -> userService.getUserByEmail(exampleMail));
+    }
+
+    @Test
+    public void testThatAvailableRolesAreUsable() {
+        VALID_ROLES.forEach(
+            role -> {
+                String email = role + "@example.com";
+                UserDto dto = UserDto.builder()
+                                     .email(email)
+                                     .password("password")
+                                     .role(role)
+                                     .build();
+                userService.createUser(dto);
+                User result = userService.getUserByEmail(email);
+                Assertions.assertNotNull(result);
+                Assertions.assertEquals(role, result.getRole());
+            }
+
+        );
+        Assertions.assertEquals(VALID_ROLES.size(), userRepository.count());
+    }
+
+    @Test
+    public void testThatUnavailableRolesAreNotUsable() {
+        Assertions.assertThrows(
+                UnavailableRoleException.class,
+                () -> userService.createUser(UserDto.builder()
+                                                    .email("thebest@mail.lol")
+                                                    .password("password")
+                                                    .role("nope this is not a valid role")
+                                                    .build())
+        );
     }
 }
 
