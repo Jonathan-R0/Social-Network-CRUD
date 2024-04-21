@@ -153,7 +153,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"genders\": [\"male\", \"female\"] \r\n}",
+									"raw": "{\r\n    \"genders\": [\"male\", \"female\", \"xd\"] \r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -180,7 +180,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"genders\": [\"male\", \"female\"] \r\n}",
+									"raw": "{\r\n    \"genders\": [\"xd\"] \r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -311,11 +311,14 @@
 				{
 					"name": "User",
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"johndoe2@test.com\",\r\n    \"password\": \"Password123\",\r\n    \"role\": \"USER\"\r\n}",
+							"raw": "{\r\n    \"email\": \"johndoe4@test.com\",\r\n    \"password\": \"Password123\",\r\n    \"role\": \"USER\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -329,30 +332,6 @@
 							],
 							"path": [
 								"user"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "User",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{url}}/user/:userId",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"user",
-								":userId"
-							],
-							"variable": [
-								{
-									"key": "userId",
-									"value": ""
-								}
 							]
 						}
 					},
@@ -412,7 +391,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"johndoe2@test.com\",\r\n    \"password\": \"Password123\"\r\n}",
+							"raw": "{\r\n    \"email\": \"johndoe3@test.com\",\r\n    \"password\": \"Password123\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
