@@ -1,5 +1,7 @@
 package com.uba.ejercicio.controllers;
 
+import com.uba.ejercicio.dto.ErrorResponseDto;
+import com.uba.ejercicio.exceptions.UnavailableRoleException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,8 +14,15 @@ public class ErrorController {
     @ResponseBody
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    String handleException(Exception ex) {
-        return "Data integrity error: " + ex.getMessage();
+    public ErrorResponseDto handleException(Exception ex) {
+        return new ErrorResponseDto("Data integrity error: " + ex.getMessage());
+    }
+
+    @ResponseBody
+    @ExceptionHandler(UnavailableRoleException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponseDto handleUnavailableRoleException(UnavailableRoleException ex) {
+        return new ErrorResponseDto(ex);
     }
 
 }
