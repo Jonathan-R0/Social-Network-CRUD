@@ -7,9 +7,9 @@ import java.util.Optional;
 
 public interface ProfileService {
 
-    Optional<Profile> getUserProfile(String userId);
+    Profile getUserProfile(Long userId);
 
-    void createProfile(String userId, ProfileResponseDto profileInformation);
+    void createProfile(Long userId, ProfileResponseDto profileInformation);
 
-    void modifyProfile(String userId, ProfileResponseDto profileInformation);
+    void modifyProfile(Long userId, ProfileResponseDto profileInformation);
 }

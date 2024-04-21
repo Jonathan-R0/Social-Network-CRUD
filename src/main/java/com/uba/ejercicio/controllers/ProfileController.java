@@ -21,25 +21,21 @@ public class ProfileController {
 
     @GetMapping
     public ResponseEntity<ProfileResponseDto> getProfile(@PathVariable String userId) {
-        Optional<Profile> profile = profileService.getUserProfile(userId); //TODO throw error if doesnt exist
+        Profile profile = profileService.getUserProfile(Long.parseLong(userId));
 
-        if (profile.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-
-        return ResponseEntity.ok(profile.get().profileToDTO());
+        return ResponseEntity.ok(profile.profileToDTO());
     }
 
     @PostMapping
     public ResponseEntity<Void> createProfile(@PathVariable String userId, @RequestBody @Valid ProfileResponseDto profileInformation) {
-        profileService.createProfile(userId, profileInformation);
+        profileService.createProfile(Long.parseLong(userId), profileInformation);
 
-        return ResponseEntity.ok().build(); //TODO if profile not found qué hacemos?
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping
     public ResponseEntity<Void> modifyProfile(@PathVariable String userId, @RequestBody @Valid ProfileResponseDto profileInformation) {
-        profileService.modifyProfile(userId, profileInformation);
+        profileService.modifyProfile(Long.parseLong(userId), profileInformation); //TODO que hacemos si no lo encuentra
 
         return ResponseEntity.ok().build();
     }

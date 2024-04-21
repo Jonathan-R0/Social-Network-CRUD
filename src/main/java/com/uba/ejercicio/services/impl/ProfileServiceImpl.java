@@ -1,6 +1,7 @@
 package com.uba.ejercicio.services.impl;
 
 import com.uba.ejercicio.dto.ProfileResponseDto;
+import com.uba.ejercicio.exceptions.UserNotFoundException;
 import com.uba.ejercicio.persistance.entities.Gender;
 import com.uba.ejercicio.persistance.entities.Hobby;
 import com.uba.ejercicio.persistance.entities.Profile;
@@ -13,12 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @NoArgsConstructor
 public class ProfileServiceImpl implements ProfileService {
+    public static final String USER_NOT_FOUND ="The user ID does not exist";
 
     @Autowired
     private ProfileRepository profileRepository;
@@ -30,8 +31,9 @@ public class ProfileServiceImpl implements ProfileService {
     private HobbiesRepository hobbyRepository;
 
     @Override
-    public Optional<Profile> getUserProfile(String userId) {
-        return profileRepository.findProfileById(userId);
+    public Profile getUserProfile(Long userId) {
+
+        return profileRepository.findProfileByUserId(userId).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
     }
 
     private List<Hobby> getHobbies(List<String> dtoHobbies) {
@@ -47,8 +49,8 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public void createProfile(String userId, ProfileResponseDto profileInformation) {
-        profileRepository.findProfileById(userId).ifPresentOrElse(
+    public void createProfile(Long userId, ProfileResponseDto profileInformation) {
+        profileRepository.findProfileByUserId(userId).ifPresentOrElse(
                 profile -> {/* Do nothing if profile is found */},
                 () -> {
                     Gender gender = genderRepository.findByName(profileInformation.getGender()).stream().findFirst().orElse(null);
@@ -64,8 +66,8 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public void modifyProfile(String userId, ProfileResponseDto profileInformation) {
-        profileRepository.findProfileById(userId).ifPresent(profile -> {
+    public void modifyProfile(Long userId, ProfileResponseDto profileInformation) {
+        profileRepository.findProfileByUserId(userId).ifPresent(profile -> {
             Gender gender = genderRepository.findByName(profileInformation.getGender()).stream().findFirst().orElse(null);
             profile.setName(profileInformation.getName());
             profile.setLastName(profileInformation.getLastName());
