@@ -3,7 +3,6 @@ package com.uba.ejercicio.services;
 import com.uba.ejercicio.dto.ProfileResponseDto;
 import com.uba.ejercicio.persistance.entities.Profile;
 
-import java.util.Optional;
 
 public interface ProfileService {
 
