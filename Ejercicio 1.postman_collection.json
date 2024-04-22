@@ -602,6 +602,40 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Following",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"to_unfollow\": [\"badUserId\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/user/:userId/following",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user",
+								":userId",
+								"following"
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}
