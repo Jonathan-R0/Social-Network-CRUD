@@ -51,6 +51,7 @@ public class ProfileServiceTest {
         profileRepository.deleteAll();
         genderRepository.deleteAll();
         userRepository.deleteAll();
+        hobbiesRepository.deleteAll();
     }
 
     @Test
