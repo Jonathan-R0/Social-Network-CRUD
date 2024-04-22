@@ -24,7 +24,6 @@ public class SecurityConfiguration {
             "/swagger-ui/**",
             "/swagger",
             "/api-docs/**",
-            "/api/v1/user",
             "/refresh-token",
             "/login",
     };
@@ -41,13 +40,22 @@ public class SecurityConfiguration {
         http.authorizeHttpRequests(
                     authorizeRequests -> {
                         authorizeRequests.requestMatchers(AUTH_WHITELIST).permitAll();
-                        authorizeRequests.requestMatchers(HttpMethod.GET, "/api/v1/user/gender").hasAnyAuthority(ADMIN_ROLE, USER_ROLE);
-                        authorizeRequests.requestMatchers(HttpMethod.DELETE, "/api/v1/user/gender").hasAuthority(ADMIN_ROLE);
-                        authorizeRequests.requestMatchers(HttpMethod.POST, "/api/v1/user/gender").hasAuthority(ADMIN_ROLE);
+                        authorizeRequests.requestMatchers(HttpMethod.POST, "/api/v1/user")
+                                .permitAll();
+                        authorizeRequests.requestMatchers(HttpMethod.GET, "/api/v1/user/gender")
+                                .hasAnyAuthority(ADMIN_ROLE, USER_ROLE);
+                        authorizeRequests.requestMatchers(HttpMethod.DELETE, "/api/v1/user/gender", "api/v1/user")
+                                .hasAuthority(ADMIN_ROLE);
+                        authorizeRequests.requestMatchers(HttpMethod.DELETE, "api/v1/user/self")
+                                .hasAnyAuthority(ADMIN_ROLE, USER_ROLE);
+                        authorizeRequests.requestMatchers(HttpMethod.POST, "/api/v1/user/gender")
+                                .hasAuthority(ADMIN_ROLE);
                         authorizeRequests.anyRequest().authenticated();
                     }
             )
-            .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()))
+            .cors(httpSecurityCorsConfigurer ->
+                    httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource())
+            )
             .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class).build();
