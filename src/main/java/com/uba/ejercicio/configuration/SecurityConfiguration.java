@@ -24,8 +24,9 @@ public class SecurityConfiguration {
             "/swagger-ui/**",
             "/swagger",
             "/api-docs/**",
-            "/refresh-token",
-            "/login",
+            "/auth/refresh-token",
+            "/auth/login",
+            "/auth/logout"
     };
 
     @Autowired

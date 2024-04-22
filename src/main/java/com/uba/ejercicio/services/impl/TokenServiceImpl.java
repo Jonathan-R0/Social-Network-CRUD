@@ -66,7 +66,11 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public String getEmailFromHeader(String header) {
-        if (header == null || !header.startsWith("Bearer ")) throw new TokenException("Invalid token.");
         return tokenManager.getEmailFromToken(header.substring(BEARER_LENGTH));
+    }
+
+    @Override
+    public void destroySession(String email) {
+        refreshTokenRepository.deleteById(email);
     }
 }

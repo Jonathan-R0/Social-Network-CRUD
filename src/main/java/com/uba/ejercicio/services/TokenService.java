@@ -10,4 +10,5 @@ public interface TokenService {
 
     String getEmailFromHeader(String header);
 
+    void destroySession(String email);
 }
