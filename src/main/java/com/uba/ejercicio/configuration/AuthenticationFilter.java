@@ -1,6 +1,7 @@
 package com.uba.ejercicio.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.uba.ejercicio.persistance.repositories.AccessTokenRepository;
 import com.uba.ejercicio.services.UserService;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
@@ -32,6 +33,9 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private TokenManager tokenManager;
 
+    @Autowired
+    private AccessTokenRepository accessTokenRepository;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
@@ -45,7 +49,8 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
                 if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     UserDetails userDetails = this.userService.loadUserByUsername(username);
-                    if (tokenManager.validateToken(token, userDetails)) {
+                    if (tokenManager.validateToken(token, userDetails) &&
+                            accessTokenRepository.existsById(userDetails.getUsername())) {
                         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
                                 userDetails, null, userDetails.getAuthorities()
                         );
