@@ -42,6 +42,8 @@ public class TokenServiceImpl implements TokenService {
     @Value("${jwt.refresh.duration}")
     private int refreshDuration;
 
+    private static final int BEARER_LENGTH = "Bearer ".length();
+
     @Override
     public LoginResponseDto refreshToken(String token) {
         var email = tokenManager.getEmailFromToken(token);
@@ -79,5 +81,11 @@ public class TokenServiceImpl implements TokenService {
         String refreshToken = tokenManager.generateRefreshToken(userDetails);
         refreshTokenRepository.save(new RefreshToken(refreshToken, email, LocalDateTime.now()));
         return new LoginResponseDto(token, refreshToken);
+    }
+
+    @Override
+    public String getEmailFromHeader(String header) {
+        if (header == null || !header.startsWith("Bearer ")) throw new TokenException("Invalid token.");
+        return tokenManager.getEmailFromToken(header.substring(BEARER_LENGTH));
     }
 }

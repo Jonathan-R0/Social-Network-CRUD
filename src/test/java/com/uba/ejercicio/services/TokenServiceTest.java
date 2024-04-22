@@ -150,4 +150,13 @@ public class TokenServiceTest {
         Assertions.assertNotEquals(initialCredentials.getAccessToken(), newCredentials.getAccessToken());
         Assertions.assertEquals(1, accessTokenRepository.count());
     }
+
+    @Test
+    public void testGetEmailFromHeaderWorks() {
+        String email = "test@test.com";
+        String password = "password";
+        createUser(email, password);
+        LoginResponseDto resp = tokenService.authResponse(email, password);
+        Assertions.assertEquals(email, tokenService.getEmailFromHeader("Bearer " + resp.getAccessToken()));
+    }
 }
