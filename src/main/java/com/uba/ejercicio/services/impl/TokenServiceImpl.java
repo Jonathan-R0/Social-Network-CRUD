@@ -31,9 +31,6 @@ public class TokenServiceImpl implements TokenService {
     @Autowired
     private RefreshTokenRepository refreshTokenRepository;
 
-    @Value("${jwt.access.duration}")
-    private int accessDuration;
-
     @Value("${jwt.refresh.duration}")
     private int refreshDuration;
 
