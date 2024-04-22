@@ -3,7 +3,9 @@ package com.uba.ejercicio.services.impl;
 import com.uba.ejercicio.configuration.TokenManager;
 import com.uba.ejercicio.dto.LoginResponseDto;
 import com.uba.ejercicio.exceptions.TokenException;
+import com.uba.ejercicio.persistance.entities.AccessToken;
 import com.uba.ejercicio.persistance.entities.RefreshToken;
+import com.uba.ejercicio.persistance.repositories.AccessTokenRepository;
 import com.uba.ejercicio.persistance.repositories.RefreshTokenRepository;
 import com.uba.ejercicio.services.TokenService;
 import com.uba.ejercicio.services.UserService;
@@ -31,6 +33,12 @@ public class TokenServiceImpl implements TokenService {
     @Autowired
     private RefreshTokenRepository refreshTokenRepository;
 
+    @Autowired
+    private AccessTokenRepository accessTokenRepository;
+
+    @Value("${jwt.access.duration}")
+    private int accessDuration;
+
     @Value("${jwt.refresh.duration}")
     private int refreshDuration;
 
@@ -41,7 +49,9 @@ public class TokenServiceImpl implements TokenService {
                 .orElseThrow(() -> new TokenException("No refresh token was found"));
         if (!foundToken.getEmail().equals(email)) throw new TokenException("Invalid token");
         UserDetails userDetails = userService.loadUserByUsername(email);
+        accessTokenRepository.deleteById(email);
         String newAccessToken = tokenManager.generateToken(userDetails);
+        accessTokenRepository.save(new AccessToken(newAccessToken, email, LocalDateTime.now()));
         if (LocalDateTime.now().isAfter(foundToken.getCreationTime().plusSeconds(refreshDuration))) { // Restart session
             String newRefreshToken = tokenManager.generateRefreshToken(userDetails);
             foundToken.setToken(newRefreshToken);
@@ -55,10 +65,17 @@ public class TokenServiceImpl implements TokenService {
     public LoginResponseDto authResponse(String email, String password) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
         UserDetails userDetails = userService.loadUserByUsername(email);
-        String token = tokenManager.generateToken(userDetails);
-        if (refreshTokenRepository.existsById(email)) {
-            refreshTokenRepository.deleteById(email);
-        }
+        String token = accessTokenRepository.findById(email)
+                .map(accessToken ->
+                        (LocalDateTime.now().isAfter(accessToken.getCreationTime().plusSeconds(accessDuration)))
+                        ? null : accessToken.getToken()
+                )
+                .orElseGet(() -> {
+                    String newToken = tokenManager.generateToken(userDetails);
+                    accessTokenRepository.save(new AccessToken(newToken, email, LocalDateTime.now()));
+                    return newToken;
+                });
+        if (refreshTokenRepository.existsById(email)) refreshTokenRepository.deleteById(email);
         String refreshToken = tokenManager.generateRefreshToken(userDetails);
         refreshTokenRepository.save(new RefreshToken(refreshToken, email, LocalDateTime.now()));
         return new LoginResponseDto(token, refreshToken);
