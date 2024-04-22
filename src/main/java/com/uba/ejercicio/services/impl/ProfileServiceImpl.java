@@ -41,12 +41,13 @@ public class ProfileServiceImpl implements ProfileService {
         return profileRepository.findProfileByUserId(userId).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
     }
 
-    private List<Hobby> getHobbies(List<String> dtoHobbies) {
+    private List<Hobby> getHobbies(List<String> dtoHobbies) { //TODO no estoy muy segura a donde mover esta funcion
         return dtoHobbies.stream()
                 .map(hobbyName -> hobbyRepository.findByName(hobbyName)
                         .orElseGet(() -> {
-                            Hobby newHobby = new Hobby();
-                            newHobby.setName(hobbyName);
+                            Hobby newHobby = Hobby.builder()
+                                    .name(hobbyName)
+                                    .build();
                             hobbyRepository.save(newHobby);
                             return newHobby;
                         }))
@@ -59,7 +60,7 @@ public class ProfileServiceImpl implements ProfileService {
                 profile -> {/* Do nothing if profile is found */},
                 () -> {
                     User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
-                    Gender gender = genderRepository.findByName(profileInformation.getGender()).stream().findFirst().orElse(null);
+                    Gender gender = genderRepository.findByName(profileInformation.getGender()).orElse(null);
                     profileRepository.save(Profile.builder()
                             .name(profileInformation.getName())
                             .lastName(profileInformation.getLastName())
