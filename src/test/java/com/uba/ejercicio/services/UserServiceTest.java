@@ -3,7 +3,6 @@ package com.uba.ejercicio.services;
 import com.uba.ejercicio.dto.UserDto;
 import com.uba.ejercicio.exceptions.UnavailableRoleException;
 import com.uba.ejercicio.persistance.entities.User;
-import com.uba.ejercicio.persistance.repositories.AccessTokenRepository;
 import com.uba.ejercicio.persistance.repositories.RefreshTokenRepository;
 import com.uba.ejercicio.persistance.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
@@ -35,13 +34,9 @@ public class UserServiceTest {
     @Autowired
     private RefreshTokenRepository refreshTokenRepository;
 
-    @Autowired
-    private AccessTokenRepository accessTokenRepository;
-
     @BeforeEach
     public void setUp() {
         refreshTokenRepository.deleteAll();
-        accessTokenRepository.deleteAll();
         userRepository.deleteAll();
     }
 
@@ -88,7 +83,6 @@ public class UserServiceTest {
         userService.createUser(dto);
         tokenService.authResponse(exampleMail, password);
         userService.deleteUserByEmail(exampleMail);
-        Assertions.assertEquals(0, accessTokenRepository.count());
         Assertions.assertEquals(0, refreshTokenRepository.count());
     }
 
@@ -167,7 +161,6 @@ public class UserServiceTest {
         tokenService.authResponse(email2, password);
         tokenService.authResponse(email3, password);
         userService.deleteAllFromList(List.of(email1, email2, email3));
-        Assertions.assertEquals(0, accessTokenRepository.count());
         Assertions.assertEquals(0, refreshTokenRepository.count());
     }
 }

@@ -3,7 +3,6 @@ package com.uba.ejercicio.services.impl;
 import com.uba.ejercicio.dto.UserDto;
 import com.uba.ejercicio.exceptions.UnavailableRoleException;
 import com.uba.ejercicio.persistance.entities.User;
-import com.uba.ejercicio.persistance.repositories.AccessTokenRepository;
 import com.uba.ejercicio.persistance.repositories.RefreshTokenRepository;
 import com.uba.ejercicio.persistance.repositories.UserRepository;
 import com.uba.ejercicio.services.UserService;
@@ -33,9 +32,6 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private RefreshTokenRepository refreshTokenRepository;
-
-    @Autowired
-    private AccessTokenRepository accessTokenRepository;
 
     private static final Set<String> VALID_ROLES = Set.of("ADMIN", "USER");
 
@@ -68,7 +64,6 @@ public class UserServiceImpl implements UserService {
 
     private void deleteUserTokensAndUserFromEmail(String email) {
         refreshTokenRepository.deleteById(email);
-        accessTokenRepository.deleteById(email);
         userRepository.delete(getUserByEmail(email));
     }
 

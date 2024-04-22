@@ -3,9 +3,7 @@ package com.uba.ejercicio.services;
 import com.uba.ejercicio.configuration.TokenManager;
 import com.uba.ejercicio.dto.LoginResponseDto;
 import com.uba.ejercicio.exceptions.TokenException;
-import com.uba.ejercicio.persistance.entities.AccessToken;
 import com.uba.ejercicio.persistance.entities.User;
-import com.uba.ejercicio.persistance.repositories.AccessTokenRepository;
 import com.uba.ejercicio.persistance.repositories.RefreshTokenRepository;
 import com.uba.ejercicio.persistance.repositories.UserRepository;
 import org.junit.jupiter.api.Assertions;
@@ -16,7 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 @SpringBootTest
@@ -27,9 +24,6 @@ public class TokenServiceTest {
 
     @Autowired
     private RefreshTokenRepository refreshTokenRepository;
-
-    @Autowired
-    private AccessTokenRepository accessTokenRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -47,7 +41,6 @@ public class TokenServiceTest {
     @BeforeEach
     public void setUp() {
         refreshTokenRepository.deleteAll();
-        accessTokenRepository.deleteAll();
         userRepository.deleteAll();
     }
 
@@ -120,35 +113,19 @@ public class TokenServiceTest {
     public void testAccessTokenIsReturnedWhenFoundInDatabase() {
         String email = "test@test.com";
         String password = "password";
-        String token = "token";
         createUser(email, password);
-        accessTokenRepository.save(new AccessToken(token, email, LocalDateTime.now()));
         LoginResponseDto resp = tokenService.authResponse(email, password);
-        Assertions.assertEquals(token, resp.getAccessToken());
+        Assertions.assertNotNull(resp.getAccessToken());
     }
 
     @Test
-    public void testAccessTokenIsGeneratedWhenNotFoundInDatabase() {
+    public void testRefreshTokenIsDeletedWhenClosingSession() {
         String email = "test@test.com";
         String password = "password";
         createUser(email, password);
-        LoginResponseDto resp = tokenService.authResponse(email, password);
-        Assertions.assertEquals(resp.getAccessToken(), accessTokenRepository.findById(email).orElseThrow().getToken());
-    }
-
-    @Test
-    public void testAccessTokenIsChangedWhenRefreshTokenIsUsed() {
-        String email = "test@test.com";
-        String password = "password";
-        createUser(email, password);
-        LoginResponseDto initialCredentials = tokenService.authResponse(email, password);
-        accessTokenRepository.deleteById(email);
-        accessTokenRepository.save(
-                new AccessToken(initialCredentials.getAccessToken(), email, LocalDateTime.now().minusDays(1))
-        ); // Expired token, if not the same token will be generated
-        LoginResponseDto newCredentials = tokenService.refreshToken(initialCredentials.getRefreshToken());
-        Assertions.assertNotEquals(initialCredentials.getAccessToken(), newCredentials.getAccessToken());
-        Assertions.assertEquals(1, accessTokenRepository.count());
+        tokenService.authResponse(email, password);
+        tokenService.destroySession(email);
+        Assertions.assertEquals(0, refreshTokenRepository.count());
     }
 
     @Test
