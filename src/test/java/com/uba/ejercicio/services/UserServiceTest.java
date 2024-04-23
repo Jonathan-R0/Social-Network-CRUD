@@ -57,5 +57,21 @@ public class UserServiceTest {
         userService.deleteUserByEmail(exampleMail);
         Assertions.assertThrows(NoSuchElementException.class, () -> userService.getUserByEmail(exampleMail));
     }
+    //Test para el método getUserById exitoso y fracaso
+    @Test
+    public void testGetUserByIdDoesReturnOneResultWhenOneUserIsPresent() {
+        String exampleMail = "test@example.com";
+        User user = userService.createUser(UserDto.builder().email(exampleMail).password("password").build());
+        User result = userService.getUserById(user.getId());
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(exampleMail, result.getEmail());
+    }
+    @Test
+    public void testGetUserByIdDoesNotReturnAnythingWhenNoUsersArePresent() {
+        Assertions.assertThrows(NoSuchElementException.class, () -> userService.getUserById(1L));
+    }
+    //Test para el método followUser exitoso y fracaso
+    //Test para el método unfollowUser exitoso y fracaso
+    //Test para el método getFollowers lista vacia y no vacia
 }
 
