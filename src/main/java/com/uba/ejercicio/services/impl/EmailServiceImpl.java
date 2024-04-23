@@ -4,8 +4,6 @@ import com.uba.ejercicio.configuration.MimeMessageHelperFactory;
 import com.uba.ejercicio.services.EmailService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -14,12 +12,14 @@ import org.springframework.mail.javamail.JavaMailSender;
 @Service
 public class EmailServiceImpl implements EmailService {
 
-    @Autowired
-    @Qualifier("getJavaMailSender")
-    private JavaMailSender javaMailSender;
+    private final JavaMailSender javaMailSender;
 
-    @Autowired
-    private MimeMessageHelperFactory mimeMessageHelperFactory;
+    private final MimeMessageHelperFactory mimeMessageHelperFactory;
+
+    public EmailServiceImpl(JavaMailSender javaMailSender, MimeMessageHelperFactory mimeMessageHelperFactory) {
+        this.javaMailSender = javaMailSender;
+        this.mimeMessageHelperFactory = mimeMessageHelperFactory;
+    }
 
     @Value("${mail.from}")
     private String from;
