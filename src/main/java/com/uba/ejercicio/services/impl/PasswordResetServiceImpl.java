@@ -45,7 +45,7 @@ public class PasswordResetServiceImpl implements PasswordResetService {
                 .build();
         String link = clientUrl + "/password/reset?token=" + token + "&id=" + user.getId();
 
-        // send email
+        // TODO send email
         log.info("Password reset link: {}", link);
 
         passwordResetRepository.save(passwordReset);
@@ -65,5 +65,7 @@ public class PasswordResetServiceImpl implements PasswordResetService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         userService.updateUser(user);
         passwordResetRepository.delete(passwordReset);
+
+        // TODO send notification email
     }
 }
