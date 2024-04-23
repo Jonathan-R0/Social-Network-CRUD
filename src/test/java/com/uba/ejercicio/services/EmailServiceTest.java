@@ -1,6 +1,5 @@
 package com.uba.ejercicio.services;
 
-import com.uba.ejercicio.TestConfig;
 import com.uba.ejercicio.configuration.MimeMessageHelperFactory;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -8,22 +7,23 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-@Import(TestConfig.class)
+@ActiveProfiles("test")
 public class EmailServiceTest {
 
     @Autowired
     private EmailService emailService;
 
-    @Autowired
+    @MockBean
     private JavaMailSender javaMailSender;
 
     private final MimeMessageHelperFactory mimeMessageHelperFactory = Mockito.mock(MimeMessageHelperFactory.class);
