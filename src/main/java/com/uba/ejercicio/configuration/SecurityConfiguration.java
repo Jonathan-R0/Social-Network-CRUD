@@ -27,7 +27,8 @@ public class SecurityConfiguration {
             "/auth/refresh-token",
             "/auth/login",
             "/auth/logout",
-            "/user/password/**"
+            "/user/password/forgot",
+            "/user/password/*/recover/*"
     };
 
     @Autowired
