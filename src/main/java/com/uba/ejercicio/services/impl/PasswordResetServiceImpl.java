@@ -7,8 +7,6 @@ import com.uba.ejercicio.persistance.repositories.PasswordResetRepository;
 import com.uba.ejercicio.services.EmailService;
 import com.uba.ejercicio.services.PasswordResetService;
 import com.uba.ejercicio.services.UserService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,26 +15,33 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
-@Slf4j
 public class PasswordResetServiceImpl implements PasswordResetService {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    private PasswordResetRepository passwordResetRepository;
+    private final PasswordResetRepository passwordResetRepository;
+
+    private final PasswordEncoder passwordEncoder;
+
+    private final EmailService emailService;
+
+    public PasswordResetServiceImpl(
+            UserService userService,
+            PasswordResetRepository passwordResetRepository,
+            PasswordEncoder passwordEncoder,
+            EmailService emailService
+    ) {
+        this.userService = userService;
+        this.passwordResetRepository = passwordResetRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.emailService = emailService;
+    }
 
     @Value("${password.reset.email.duration}")
     private int duration;
 
     @Value("${client.url}")
     private String clientUrl;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private EmailService emailService;
 
     @Override
     public void sendEmail(String email) {
