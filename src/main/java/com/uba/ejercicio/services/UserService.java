@@ -16,5 +16,7 @@ public interface UserService extends UserDetailsService {
 
     void deleteAllFromList(List<String> emails);
 
+    void updatePassword(String email, String oldPassword, String newPassword);
+
     void updateUser(User user);
 }

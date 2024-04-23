@@ -63,6 +63,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void updatePassword(String email, String oldPassword, String newPassword) {
+        User user = getUserByEmail(email);
+        if (passwordEncoder.matches(oldPassword, user.getPassword())) {
+            user.setPassword(passwordEncoder.encode(newPassword));
+            updateUser(user);
+        } else {
+            throw new IllegalArgumentException("Old password is incorrect."); // TODO: Create custom exception
+        }
+    }
+
+    @Override
     public void updateUser(User user) {
         userRepository.save(user);
     }
