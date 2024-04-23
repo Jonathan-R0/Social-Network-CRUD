@@ -362,7 +362,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"emails\": [\"johndoe2@test.com\", \"johndoe8@test.com\"] \r\n}",
+							"raw": "{\r\n    \"emails\": [\"test8@test.com\"] \r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -388,6 +388,22 @@
 			"item": [
 				{
 					"name": "Refresh Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = pm.response.json();\r",
+									"if (data[\"accessToken\"])\r",
+									"    postman.setEnvironmentVariable(\"token\", data[\"accessToken\"]);\r",
+									"if (data[\"refreshToken\"])\r",
+									"    postman.setEnvironmentVariable(\"refreshToken\", data[\"refreshToken\"]);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -402,11 +418,12 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/refresh-token",
+							"raw": "{{baseUrl}}/auth/refresh-token",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
+								"auth",
 								"refresh-token"
 							]
 						}
@@ -420,7 +437,11 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									""
+									"var data = pm.response.json();\r",
+									"if (data[\"accessToken\"])\r",
+									"    postman.setEnvironmentVariable(\"token\", data[\"accessToken\"]);\r",
+									"if (data[\"refreshToken\"])\r",
+									"    postman.setEnvironmentVariable(\"refreshToken\", data[\"refreshToken\"]);"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -443,12 +464,43 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/login",
+							"raw": "{{baseUrl}}/auth/login",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
+								"auth",
 								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/auth/logout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"logout"
 							]
 						}
 					},
@@ -472,11 +524,7 @@
 						"type": "text/javascript",
 						"packages": {},
 						"exec": [
-							"var data = pm.response.json();\r",
-							"if (data[\"accessToken\"])\r",
-							"    postman.setEnvironmentVariable(\"token\", data[\"accessToken\"]);\r",
-							"if (data[\"refreshToken\"])\r",
-							"    postman.setEnvironmentVariable(\"refreshToken\", data[\"refreshToken\"]);"
+							""
 						]
 					}
 				}
