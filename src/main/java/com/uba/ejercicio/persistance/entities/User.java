@@ -25,10 +25,10 @@ public class User {
     @OneToOne
     private Profile profile;
 
-    @ManyToMany(mappedBy = "followed")
+    @ManyToMany
     private Set<User> followers;
 
-    @ManyToMany(mappedBy = "follower")
+    @ManyToMany
     private Set<User> following;
 
 }
