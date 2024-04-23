@@ -1,5 +1,6 @@
 package com.uba.ejercicio.services.impl;
 
+import com.uba.ejercicio.configuration.MimeMessageHelperFactory;
 import com.uba.ejercicio.services.EmailService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -15,6 +16,9 @@ public class EmailServiceImpl implements EmailService {
     @Autowired
     private JavaMailSender javaMailSender;
 
+    @Autowired
+    private MimeMessageHelperFactory mimeMessageHelperFactory;
+
     @Value("${mail.from}")
     private String from;
 
@@ -22,7 +26,7 @@ public class EmailServiceImpl implements EmailService {
     public void sendEmail(String to, String subject, String body) {
         try {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
+            MimeMessageHelper helper = mimeMessageHelperFactory.create(mimeMessage, "utf-8");
             helper.setFrom(from);
             helper.setTo(to);
             helper.setSubject(subject);
