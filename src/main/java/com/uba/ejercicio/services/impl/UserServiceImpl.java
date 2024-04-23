@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @NoArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -37,5 +39,32 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUserByEmail(String email) {
         userRepository.delete(getUserByEmail(email));
+    }
+
+    public User getUserById(Long id) {
+        return userRepository.findById(id).orElseThrow();
+    }
+
+    public void followUser(User follower, User followed) {
+        follower.getFollowing().add(followed);
+        followed.getFollowers().add(follower);
+        userRepository.save(follower);
+        userRepository.save(followed);
+    }
+
+
+    public void unfollowUser(User follower, User followed) {
+        follower.getFollowing().remove(followed);
+        followed.getFollowers().remove(follower);
+        userRepository.save(follower);
+        userRepository.save(followed);
+    }
+
+    public List<String> getFollowers(User user) {
+        return user.getFollowers().stream().map(User::getEmail).toList();
+    }
+
+    public List<String> getFollowing(User user) {
+        return user.getFollowing().stream().map(User::getEmail).toList();
     }
 }

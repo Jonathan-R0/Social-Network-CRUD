@@ -2,6 +2,7 @@ package com.uba.ejercicio.persistance.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import java.util.*;
 
 @Entity
 @Getter
@@ -23,5 +24,11 @@ public class User {
 
     @OneToOne
     private Profile profile;
+
+    @ManyToMany(mappedBy = "followed")
+    private Set<User> followers;
+
+    @ManyToMany(mappedBy = "follower")
+    private Set<User> following;
 
 }

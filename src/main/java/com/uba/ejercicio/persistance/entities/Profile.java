@@ -49,4 +49,6 @@ public class Profile {
                 .hobbies(hobbies.stream().map(Hobby::getName).collect(Collectors.toList()))
                 .build();
     }
+
+
 }
