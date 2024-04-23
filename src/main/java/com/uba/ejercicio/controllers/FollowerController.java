@@ -23,18 +23,14 @@ public class FollowerController {
 
     @PostMapping("/user/{followedUserId}")
     public ResponseEntity<Void> createFollower(@PathVariable("userId") Long followerUserId, @PathVariable Long followedUserId) {
-        User followedUser = userService.getUserById(followedUserId);
-        User followerUser = userService.getUserById(followerUserId);
-        userService.followUser(followerUser,followedUser);
+        userService.followUser(followerUserId,followedUserId);
         return ResponseEntity.ok().build();
     }
 
 
     @DeleteMapping("/user/{followedUserId}")
     public ResponseEntity<Void> deleteFollower(@PathVariable("userId") Long followerUserId, @PathVariable Long followedUserId) {
-        User followedUser = userService.getUserById(followedUserId);
-        User followerUser = userService.getUserById(followerUserId);
-        userService.unfollowUser(followerUser,followedUser);
+        userService.unfollowUser(followerUserId,followedUserId);
         return ResponseEntity.ok().build();
 
     }

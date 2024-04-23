@@ -16,9 +16,9 @@ public interface UserService {
 
     User getUserById(Long id);
 
-    void followUser(User follower, User followed);
+    void followUser(Long follower, Long followed);
 
-    void unfollowUser(User follower, User followed);
+    void unfollowUser(Long follower, Long followed);
 
     List<String> getFollowers(User user);
 

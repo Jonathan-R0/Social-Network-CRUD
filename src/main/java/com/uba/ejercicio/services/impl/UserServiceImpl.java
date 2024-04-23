@@ -45,7 +45,9 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(id).orElseThrow();
     }
 
-    public void followUser(User follower, User followed) {
+    public void followUser(Long followerId, Long followedId) {
+        var follower = getUserById(followerId);
+        var followed = getUserById(followedId);
         follower.getFollowing().add(followed);
         followed.getFollowers().add(follower);
         userRepository.save(follower);
@@ -53,7 +55,9 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    public void unfollowUser(User follower, User followed) {
+    public void unfollowUser(Long followerId, Long followedId) {
+        var follower = getUserById(followerId);
+        var followed = getUserById(followedId);
         follower.getFollowing().remove(followed);
         followed.getFollowers().remove(follower);
         userRepository.save(follower);
