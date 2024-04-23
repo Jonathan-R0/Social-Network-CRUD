@@ -26,7 +26,9 @@ public class SecurityConfiguration {
             "/api-docs/**",
             "/auth/refresh-token",
             "/auth/login",
-            "/auth/logout"
+            "/auth/logout",
+            "/user/password/forgot",
+            "/user/password/*/recover/*"
     };
 
     @Autowired

@@ -163,5 +163,26 @@ public class UserServiceTest {
         userService.deleteAllFromList(List.of(email1, email2, email3));
         Assertions.assertEquals(0, refreshTokenRepository.count());
     }
+
+    @Test
+    public void testPasswordIsUpdatedWhenCredentialsAreCorrect() {
+        String exampleMail = "test@example.com";
+        String password = "password";
+        UserDto dto = UserDto.builder().email(exampleMail).password(password).role("ADMIN").build();
+        userService.createUser(dto);
+        userService.updatePassword(exampleMail, password, "newPassword");
+        User fetchedData = userRepository.findByEmail(exampleMail).orElseThrow();
+        Assertions.assertTrue(passwordEncoder.matches("newPassword", fetchedData.getPassword()));
+    }
+
+    @Test
+    public void testPasswordIsNotUpdatedWhenCredentialsAreNotCorrect() {
+        String exampleMail = "test@example.com";
+        String password = "password";
+        UserDto dto = UserDto.builder().email(exampleMail).password(password).role("ADMIN").build();
+        userService.createUser(dto);
+        Assertions.assertThrows(RuntimeException.class,
+                () -> userService.updatePassword(exampleMail, password + ".", "newPassword"));
+    }
 }
 
