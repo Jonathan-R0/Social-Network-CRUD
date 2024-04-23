@@ -66,7 +66,6 @@ public class PasswordResetServiceImpl implements PasswordResetService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         userService.updateUser(user);
         passwordResetRepository.delete(passwordReset);
-
-        // TODO send notification email
+        emailService.sendEmail(user.getEmail(), "Password reset successful!", "Password reset successful :)");
     }
 }
