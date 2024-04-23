@@ -4,6 +4,7 @@ import com.uba.ejercicio.dto.RecoverPasswordRequestDto;
 import com.uba.ejercicio.persistance.entities.PasswordReset;
 import com.uba.ejercicio.persistance.entities.User;
 import com.uba.ejercicio.persistance.repositories.PasswordResetRepository;
+import com.uba.ejercicio.services.EmailService;
 import com.uba.ejercicio.services.PasswordResetService;
 import com.uba.ejercicio.services.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +35,9 @@ public class PasswordResetServiceImpl implements PasswordResetService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private EmailService emailService;
+
     @Override
     public void sendEmail(String email) {
         User user = userService.getUserByEmail(email);
@@ -44,10 +48,7 @@ public class PasswordResetServiceImpl implements PasswordResetService {
                 .expirationDate(LocalDateTime.now().plusSeconds(duration))
                 .build();
         String link = clientUrl + "/password/reset?token=" + token + "&id=" + user.getId();
-
-        // TODO send email
-        log.info("Password reset link: {}", link);
-
+        emailService.sendEmail(email, "Password reset", "Open this link to reset your password: " + link);
         passwordResetRepository.save(passwordReset);
     }
 
