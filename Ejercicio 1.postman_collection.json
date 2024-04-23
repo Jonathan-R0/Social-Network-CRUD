@@ -153,7 +153,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"genders\": [\"male\", \"female\", \"xd\"] \r\n}",
+									"raw": "{\r\n    \"genders\": [\"male\", \"female\"] \r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -180,7 +180,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"genders\": [\"xd\"] \r\n}",
+									"raw": "{\r\n    \"genders\": [\"X\"] \r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -336,6 +336,50 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/user/self",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user",
+								"self"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"emails\": [\"test8@test.com\"] \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/user",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -344,6 +388,22 @@
 			"item": [
 				{
 					"name": "Refresh Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = pm.response.json();\r",
+									"if (data[\"accessToken\"])\r",
+									"    postman.setEnvironmentVariable(\"token\", data[\"accessToken\"]);\r",
+									"if (data[\"refreshToken\"])\r",
+									"    postman.setEnvironmentVariable(\"refreshToken\", data[\"refreshToken\"]);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -358,11 +418,12 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/refresh-token",
+							"raw": "{{baseUrl}}/auth/refresh-token",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
+								"auth",
 								"refresh-token"
 							]
 						}
@@ -376,7 +437,11 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									""
+									"var data = pm.response.json();\r",
+									"if (data[\"accessToken\"])\r",
+									"    postman.setEnvironmentVariable(\"token\", data[\"accessToken\"]);\r",
+									"if (data[\"refreshToken\"])\r",
+									"    postman.setEnvironmentVariable(\"refreshToken\", data[\"refreshToken\"]);"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -391,7 +456,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"johndoe3@test.com\",\r\n    \"password\": \"Password123\"\r\n}",
+							"raw": "{\r\n    \"email\": \"test@test.com\",\r\n    \"password\": \"Password123\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -399,12 +464,43 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/login",
+							"raw": "{{baseUrl}}/auth/login",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
+								"auth",
 								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/auth/logout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"logout"
 							]
 						}
 					},
@@ -428,11 +524,7 @@
 						"type": "text/javascript",
 						"packages": {},
 						"exec": [
-							"var data = pm.response.json();\r",
-							"if (data[\"accessToken\"])\r",
-							"    postman.setEnvironmentVariable(\"token\", data[\"accessToken\"]);\r",
-							"if (data[\"refreshToken\"])\r",
-							"    postman.setEnvironmentVariable(\"refreshToken\", data[\"refreshToken\"]);"
+							""
 						]
 					}
 				}
@@ -539,6 +631,40 @@
 					"request": {
 						"method": "GET",
 						"header": [],
+						"url": {
+							"raw": "{{url}}/user/:userId/following",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user",
+								":userId",
+								"following"
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Following",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"to_unfollow\": [\"badUserId\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "{{url}}/user/:userId/following",
 							"host": [

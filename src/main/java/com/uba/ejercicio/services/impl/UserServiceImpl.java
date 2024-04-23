@@ -3,6 +3,7 @@ package com.uba.ejercicio.services.impl;
 import com.uba.ejercicio.dto.UserDto;
 import com.uba.ejercicio.exceptions.UnavailableRoleException;
 import com.uba.ejercicio.persistance.entities.User;
+import com.uba.ejercicio.persistance.repositories.RefreshTokenRepository;
 import com.uba.ejercicio.persistance.repositories.UserRepository;
 import com.uba.ejercicio.services.UserService;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -27,6 +29,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RefreshTokenRepository refreshTokenRepository;
 
     private static final Set<String> VALID_ROLES = Set.of("ADMIN", "USER");
 
@@ -49,6 +54,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUserByEmail(String email) {
+        deleteUserTokensAndUserFromEmail(email);
+    }
+
+    @Override
+    public void deleteAllFromList(List<String> emails) {
+        emails.forEach(this::deleteUserTokensAndUserFromEmail);
+    }
+
+    private void deleteUserTokensAndUserFromEmail(String email) {
+        refreshTokenRepository.deleteById(email);
         userRepository.delete(getUserByEmail(email));
     }
 

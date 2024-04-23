@@ -108,4 +108,32 @@ public class TokenServiceTest {
         Assertions.assertEquals(newResp.getRefreshToken(),
                 refreshTokenRepository.findByToken(newResp.getRefreshToken()).orElseThrow().getToken());
     }
+
+    @Test
+    public void testAccessTokenIsReturnedWhenFoundInDatabase() {
+        String email = "test@test.com";
+        String password = "password";
+        createUser(email, password);
+        LoginResponseDto resp = tokenService.authResponse(email, password);
+        Assertions.assertNotNull(resp.getAccessToken());
+    }
+
+    @Test
+    public void testRefreshTokenIsDeletedWhenClosingSession() {
+        String email = "test@test.com";
+        String password = "password";
+        createUser(email, password);
+        tokenService.authResponse(email, password);
+        tokenService.destroySession(email);
+        Assertions.assertEquals(0, refreshTokenRepository.count());
+    }
+
+    @Test
+    public void testGetEmailFromHeaderWorks() {
+        String email = "test@test.com";
+        String password = "password";
+        createUser(email, password);
+        LoginResponseDto resp = tokenService.authResponse(email, password);
+        Assertions.assertEquals(email, tokenService.getEmailFromHeader("Bearer " + resp.getAccessToken()));
+    }
 }

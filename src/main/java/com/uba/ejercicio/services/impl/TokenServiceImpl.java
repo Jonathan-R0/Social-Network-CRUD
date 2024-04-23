@@ -34,6 +34,8 @@ public class TokenServiceImpl implements TokenService {
     @Value("${jwt.refresh.duration}")
     private int refreshDuration;
 
+    private static final int BEARER_LENGTH = "Bearer ".length();
+
     @Override
     public LoginResponseDto refreshToken(String token) {
         var email = tokenManager.getEmailFromToken(token);
@@ -56,11 +58,19 @@ public class TokenServiceImpl implements TokenService {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
         UserDetails userDetails = userService.loadUserByUsername(email);
         String token = tokenManager.generateToken(userDetails);
-        if (refreshTokenRepository.existsById(email)) {
-            refreshTokenRepository.deleteById(email);
-        }
+        if (refreshTokenRepository.existsById(email)) refreshTokenRepository.deleteById(email);
         String refreshToken = tokenManager.generateRefreshToken(userDetails);
         refreshTokenRepository.save(new RefreshToken(refreshToken, email, LocalDateTime.now()));
         return new LoginResponseDto(token, refreshToken);
+    }
+
+    @Override
+    public String getEmailFromHeader(String header) {
+        return tokenManager.getEmailFromToken(header.substring(BEARER_LENGTH));
+    }
+
+    @Override
+    public void destroySession(String email) {
+        refreshTokenRepository.deleteById(email);
     }
 }

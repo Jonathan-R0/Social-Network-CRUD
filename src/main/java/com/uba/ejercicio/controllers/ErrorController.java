@@ -15,7 +15,7 @@ public class ErrorController {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponseDto handleException(Exception ex) {
-        return new ErrorResponseDto("Data integrity error: " + ex.getMessage());
+        return new ErrorResponseDto("Error: " + ex.getMessage());
     }
 
     @ResponseBody

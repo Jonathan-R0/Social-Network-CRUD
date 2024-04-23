@@ -8,4 +8,7 @@ public interface TokenService {
 
     LoginResponseDto authResponse(String email, String password);
 
+    String getEmailFromHeader(String header);
+
+    void destroySession(String email);
 }
