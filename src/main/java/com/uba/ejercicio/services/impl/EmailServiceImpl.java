@@ -5,6 +5,7 @@ import com.uba.ejercicio.services.EmailService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 public class EmailServiceImpl implements EmailService {
 
     @Autowired
+    @Qualifier("getJavaMailSender")
     private JavaMailSender javaMailSender;
 
     @Autowired
