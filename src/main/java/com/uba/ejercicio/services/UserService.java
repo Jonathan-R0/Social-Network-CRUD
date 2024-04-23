@@ -16,4 +16,5 @@ public interface UserService extends UserDetailsService {
 
     void deleteAllFromList(List<String> emails);
 
+    void updateUser(User user);
 }

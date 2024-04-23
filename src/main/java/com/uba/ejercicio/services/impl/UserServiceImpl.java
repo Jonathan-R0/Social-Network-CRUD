@@ -62,6 +62,11 @@ public class UserServiceImpl implements UserService {
         emails.forEach(this::deleteUserTokensAndUserFromEmail);
     }
 
+    @Override
+    public void updateUser(User user) {
+        userRepository.save(user);
+    }
+
     private void deleteUserTokensAndUserFromEmail(String email) {
         refreshTokenRepository.deleteById(email);
         userRepository.delete(getUserByEmail(email));
