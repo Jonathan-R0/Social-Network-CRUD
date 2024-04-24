@@ -38,6 +38,7 @@ public class Profile {
     private List<Hobby> hobbies; // TODO delete hobbies when deleting profile
 
     @OneToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
     public ProfileResponseDto profileToDTO() {
@@ -46,6 +47,7 @@ public class Profile {
                 .lastName(lastName)
                 .gender(gender.getName())
                 .birthDate(birthDate)
+                .photo(photo)
                 .hobbies(hobbies.stream().map(Hobby::getName).collect(Collectors.toList()))
                 .build();
     }
