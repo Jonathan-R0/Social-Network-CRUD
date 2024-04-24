@@ -4,8 +4,7 @@ import com.uba.ejercicio.dto.UserDto;
 import com.uba.ejercicio.exceptions.UnavailableRoleException;
 import com.uba.ejercicio.exceptions.UserNotFoundException;
 import com.uba.ejercicio.persistance.entities.User;
-import com.uba.ejercicio.persistance.repositories.RefreshTokenRepository;
-import com.uba.ejercicio.persistance.repositories.UserRepository;
+import com.uba.ejercicio.persistance.repositories.*;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
@@ -38,8 +37,20 @@ public class UserServiceTest {
     @Autowired
     private RefreshTokenRepository refreshTokenRepository;
 
+    @Autowired
+    private ProfileRepository profileRepository;
+
+    @Autowired
+    private GenderRepository genderRepository;
+
+    @Autowired
+    private HobbiesRepository hobbiesRepository;
+
     @BeforeEach
     public void setUp() {
+        profileRepository.deleteAll();
+        genderRepository.deleteAll();
+        hobbiesRepository.deleteAll();
         refreshTokenRepository.deleteAll();
         userRepository.deleteAll();
     }
@@ -100,7 +111,6 @@ public class UserServiceTest {
     }
 
     @Test
-    @Transactional
     public void testGetFollowersReturnsEmptyListWhenNoFollowers() {
         String email1 = "test1@test.com";
         String email2 = "test2@test.com";

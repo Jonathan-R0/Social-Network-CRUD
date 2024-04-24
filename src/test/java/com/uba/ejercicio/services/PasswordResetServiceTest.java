@@ -3,6 +3,7 @@ package com.uba.ejercicio.services;
 import com.uba.ejercicio.configuration.MimeMessageHelperFactory;
 import com.uba.ejercicio.dto.RecoverPasswordRequestDto;
 import com.uba.ejercicio.dto.UserDto;
+import com.uba.ejercicio.exceptions.PasswordResetException;
 import com.uba.ejercicio.persistance.repositories.PasswordResetRepository;
 import com.uba.ejercicio.persistance.repositories.UserRepository;
 import com.uba.ejercicio.services.impl.EmailServiceImpl;
@@ -76,7 +77,7 @@ public class PasswordResetServiceTest {
 
     @Test
     public void testRecoverPasswordThrowsExceptionWhenTokenIsInvalid() {
-        Assertions.assertThrows(NoSuchElementException.class,
+        Assertions.assertThrows(PasswordResetException.class,
                 () -> passwordResetService.recoverPassword(1L, UUID.randomUUID().toString(),
                         RecoverPasswordRequestDto.builder().password("newPassword").build()));
     }
