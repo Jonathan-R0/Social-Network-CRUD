@@ -1,6 +1,7 @@
 package com.uba.ejercicio.services.impl;
 
 import com.uba.ejercicio.dto.ProfileResponseDto;
+import com.uba.ejercicio.exceptions.GenderNotFoundException;
 import com.uba.ejercicio.exceptions.UserNotFoundException;
 import com.uba.ejercicio.persistance.entities.Gender;
 import com.uba.ejercicio.persistance.entities.Hobby;
@@ -16,12 +17,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@NoArgsConstructor
 public class ProfileServiceImpl implements ProfileService {
     public static final String USER_NOT_FOUND ="The user ID does not exist";
+    public static final String GENDER_NOT_FOUND ="The gender does not exist";
 
     @Autowired
     private ProfileRepository profileRepository;
@@ -45,8 +47,9 @@ public class ProfileServiceImpl implements ProfileService {
         return dtoHobbies.stream()
                 .map(hobbyName -> hobbyRepository.findByName(hobbyName)
                         .orElseGet(() -> {
-                            Hobby newHobby = new Hobby();
-                            newHobby.setName(hobbyName);
+                            Hobby newHobby = Hobby.builder()
+                                    .name(hobbyName)
+                                    .build();
                             hobbyRepository.save(newHobby);
                             return newHobby;
                         }))
@@ -59,7 +62,7 @@ public class ProfileServiceImpl implements ProfileService {
                 profile -> {/* Do nothing if profile is found */},
                 () -> {
                     User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
-                    Gender gender = genderRepository.findByName(profileInformation.getGender()).stream().findFirst().orElse(null);
+                    Gender gender = genderRepository.findByName(profileInformation.getGender()).orElse(null);
                     profileRepository.save(Profile.builder()
                             .name(profileInformation.getName())
                             .lastName(profileInformation.getLastName())
@@ -74,14 +77,14 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public void modifyProfile(Long userId, ProfileResponseDto profileInformation) {
-        profileRepository.findProfileByUserId(userId).ifPresent(profile -> {
-            Gender gender = genderRepository.findByName(profileInformation.getGender()).stream().findFirst().orElse(null);
-            profile.setName(profileInformation.getName());
-            profile.setLastName(profileInformation.getLastName());
-            profile.setGender(gender);
-            profile.setBirthDate(profileInformation.getBirthDate());
-            profile.setHobbies(getHobbies(profileInformation.getHobbies()));
-            profileRepository.save(profile);
-        });
+        Profile profile = profileRepository.findProfileByUserId(userId).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+        Gender gender = genderRepository.findByName(profileInformation.getGender()).stream().findFirst().orElseThrow(() -> new GenderNotFoundException(GENDER_NOT_FOUND));
+
+        profile.setName(profileInformation.getName());
+        profile.setLastName(profileInformation.getLastName());
+        profile.setGender(gender);
+        profile.setBirthDate(profileInformation.getBirthDate());
+        profile.setHobbies(getHobbies(profileInformation.getHobbies()));
+        profileRepository.save(profile);
     }
 }

@@ -20,22 +20,22 @@ public class ProfileController {
     private ProfileService profileService;
 
     @GetMapping
-    public ResponseEntity<ProfileResponseDto> getProfile(@PathVariable String userId) {
-        Profile profile = profileService.getUserProfile(Long.parseLong(userId));
+    public ResponseEntity<ProfileResponseDto> getProfile(@PathVariable Long userId) {
+        Profile profile = profileService.getUserProfile(userId);
 
         return ResponseEntity.ok(profile.profileToDTO());
     }
 
     @PostMapping
-    public ResponseEntity<Void> createProfile(@PathVariable String userId, @RequestBody @Valid ProfileResponseDto profileInformation) {
-        profileService.createProfile(Long.parseLong(userId), profileInformation);
+    public ResponseEntity<Void> createProfile(@PathVariable Long userId, @RequestBody @Valid ProfileResponseDto profileInformation) {
+        profileService.createProfile(userId, profileInformation);
 
         return ResponseEntity.ok().build();
     }
 
     @PutMapping
-    public ResponseEntity<Void> modifyProfile(@PathVariable String userId, @RequestBody @Valid ProfileResponseDto profileInformation) {
-        profileService.modifyProfile(Long.parseLong(userId), profileInformation); //TODO que hacemos si no lo encuentra
+    public ResponseEntity<Void> modifyProfile(@PathVariable Long userId, @RequestBody @Valid ProfileResponseDto profileInformation) {
+        profileService.modifyProfile(userId, profileInformation);
 
         return ResponseEntity.ok().build();
     }
