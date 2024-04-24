@@ -28,9 +28,11 @@ public class User {
     private Profile profile;
 
     @ManyToMany
-    private List<User> followers;
-
-    @ManyToMany
-    private List<User> following;
+    @JoinTable(
+            name = "user_follows",
+            joinColumns = @JoinColumn(name = "follower_id"),
+            inverseJoinColumns = @JoinColumn(name = "followed_id")
+    )
+    private List<User> follows; // follower -> followed
 
 }
