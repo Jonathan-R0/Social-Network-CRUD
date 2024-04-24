@@ -25,6 +25,7 @@ public class User {
     private String role;
 
     @OneToOne
+    @JoinColumn(name = "profile_id")
     private Profile profile;
 
     @ManyToMany
