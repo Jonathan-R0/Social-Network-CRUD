@@ -17,11 +17,14 @@ public class GenderServiceImpl implements GenderService {
     private GenderRepository genderRepository;
 
     public void createGenderIfNotExists(List<String> genders) {
-        genders.forEach(gender -> {
-            if (genderRepository.findByName(gender).isEmpty()) {
-                genderRepository.save(Gender.builder().name(gender).build());
-            }
-        });
+        genders.forEach(gender ->
+            genderRepository.findByName(gender)
+                            .orElseGet(() -> genderRepository.save(
+                                    Gender.builder()
+                                          .name(gender)
+                                          .build()
+                            ))
+        );
     }
 
     public List<String> getAllGenders() {

@@ -3,10 +3,11 @@ package com.uba.ejercicio.services;
 import com.uba.ejercicio.dto.UserDto;
 import com.uba.ejercicio.persistance.entities.Profile;
 import com.uba.ejercicio.persistance.entities.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
 
-public interface UserService {
+public interface UserService extends UserDetailsService {
 
     User createUser(UserDto user);
 
@@ -23,4 +24,10 @@ public interface UserService {
     List<String> getFollowers(User user);
 
     List<String> getFollowing(User user);
+
+    void deleteAllFromList(List<String> emails);
+
+    void updatePassword(String email, String oldPassword, String newPassword);
+
+    void updateUser(User user);
 }
