@@ -1,7 +1,7 @@
 package com.uba.ejercicio.dto;
 
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Setter
@@ -14,10 +14,10 @@ public class UserDto {
     @Email
     private String email;
 
-    @NotEmpty
+    @NotBlank
     private String role;
 
-    @NotEmpty
+    @NotBlank
     private String password;
 
 
