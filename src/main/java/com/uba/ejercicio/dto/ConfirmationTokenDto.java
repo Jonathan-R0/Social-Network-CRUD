@@ -1,6 +1,5 @@
 package com.uba.ejercicio.dto;
 
-import jakarta.validation.constraints.Email;
 import lombok.*;
 
 @Setter
@@ -8,9 +7,8 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ValidateUserDto {
+public class ConfirmationTokenDto {
 
-    @Email
-    private String email;
+    private String confirmationToken;
 
 }
