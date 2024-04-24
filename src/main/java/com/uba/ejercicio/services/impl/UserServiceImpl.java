@@ -1,7 +1,9 @@
 package com.uba.ejercicio.services.impl;
 
 import com.uba.ejercicio.dto.UserDto;
+import com.uba.ejercicio.exceptions.PasswordResetException;
 import com.uba.ejercicio.exceptions.UnavailableRoleException;
+import com.uba.ejercicio.exceptions.UserNotFoundException;
 import com.uba.ejercicio.persistance.entities.User;
 import com.uba.ejercicio.persistance.repositories.RefreshTokenRepository;
 import com.uba.ejercicio.persistance.repositories.UserRepository;
@@ -70,7 +72,7 @@ public class UserServiceImpl implements UserService {
             user.setPassword(passwordEncoder.encode(newPassword));
             updateUser(user);
         } else {
-            throw new IllegalArgumentException("Old password is incorrect."); // TODO: Create custom exception
+            throw new PasswordResetException("Old password is incorrect.");
         }
     }
 
@@ -86,7 +88,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserById(Long id) {
-        return userRepository.findById(id).orElseThrow(); // TODO Create custom exception
+        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
     }
 
     @Override

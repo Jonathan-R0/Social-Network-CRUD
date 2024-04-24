@@ -1,6 +1,7 @@
 package com.uba.ejercicio.services.impl;
 
 import com.uba.ejercicio.configuration.MimeMessageHelperFactory;
+import com.uba.ejercicio.exceptions.MessagingRuntimeException;
 import com.uba.ejercicio.services.EmailService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -35,7 +36,7 @@ public class EmailServiceImpl implements EmailService {
             helper.setText(body);
             javaMailSender.send(mimeMessage);
         } catch (MessagingException e) {
-            throw new RuntimeException("Error sending email", e); // TODO create exception for this case
+            throw new MessagingRuntimeException("Error sending email", e);
         }
     }
 }

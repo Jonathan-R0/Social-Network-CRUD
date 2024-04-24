@@ -35,7 +35,7 @@ public class Profile {
     private Gender gender;
 
     @OneToMany(fetch = FetchType.EAGER)
-    private List<Hobby> hobbies; // TODO delete hobbies when deleting profile
+    private List<Hobby> hobbies;
 
     @OneToOne
     @JoinColumn(name = "user_id")

@@ -1,6 +1,7 @@
 package com.uba.ejercicio.services.impl;
 
 import com.uba.ejercicio.dto.RecoverPasswordRequestDto;
+import com.uba.ejercicio.exceptions.PasswordResetException;
 import com.uba.ejercicio.persistance.entities.PasswordReset;
 import com.uba.ejercicio.persistance.entities.User;
 import com.uba.ejercicio.persistance.repositories.PasswordResetRepository;
@@ -60,13 +61,13 @@ public class PasswordResetServiceImpl implements PasswordResetService {
     @Override
     public void recoverPassword(Long userId, String token, RecoverPasswordRequestDto request) {
         PasswordReset passwordReset = passwordResetRepository.findById(UUID.fromString(token))
-                .orElseThrow(); // TODO create exception for this case
+                .orElseThrow(() -> new PasswordResetException("Invalid request"));
         if (passwordReset.getExpirationDate().isBefore(LocalDateTime.now())) {
-            throw new RuntimeException("Token expired"); // TODO create exception for this case
+            throw new PasswordResetException("Token expired");
         }
         User user = passwordReset.getUser();
         if (!user.getId().equals(userId)) {
-            throw new RuntimeException("Invalid token"); // TODO create exception for this case
+            throw new PasswordResetException("Invalid token");
         }
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         userService.updateUser(user);

@@ -2,9 +2,9 @@ package com.uba.ejercicio.services;
 
 import com.uba.ejercicio.dto.UserDto;
 import com.uba.ejercicio.exceptions.UnavailableRoleException;
+import com.uba.ejercicio.exceptions.UserNotFoundException;
 import com.uba.ejercicio.persistance.entities.User;
-import com.uba.ejercicio.persistance.repositories.RefreshTokenRepository;
-import com.uba.ejercicio.persistance.repositories.UserRepository;
+import com.uba.ejercicio.persistance.repositories.*;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
@@ -37,8 +37,20 @@ public class UserServiceTest {
     @Autowired
     private RefreshTokenRepository refreshTokenRepository;
 
+    @Autowired
+    private ProfileRepository profileRepository;
+
+    @Autowired
+    private GenderRepository genderRepository;
+
+    @Autowired
+    private HobbiesRepository hobbiesRepository;
+
     @BeforeEach
     public void setUp() {
+        profileRepository.deleteAll();
+        genderRepository.deleteAll();
+        hobbiesRepository.deleteAll();
         refreshTokenRepository.deleteAll();
         userRepository.deleteAll();
     }
@@ -90,7 +102,7 @@ public class UserServiceTest {
     }
     @Test
     public void testGetUserByIdDoesNotReturnAnythingWhenNoUsersArePresent() {
-        Assertions.assertThrows(NoSuchElementException.class, () -> userService.getUserById(1L));
+        Assertions.assertThrows(UserNotFoundException.class, () -> userService.getUserById(1L));
     }
 
     private void createPairOfUsers(String email1, String email2) {
@@ -99,7 +111,6 @@ public class UserServiceTest {
     }
 
     @Test
-    @Transactional
     public void testGetFollowersReturnsEmptyListWhenNoFollowers() {
         String email1 = "test1@test.com";
         String email2 = "test2@test.com";
@@ -135,13 +146,13 @@ public class UserServiceTest {
     @Test
     public void testFollowUserDoesNotWorkWhenFirstUserNotPresent() {
         userService.createUser(UserDto.builder().email("test1@test.com").password("password").role("ADMIN").build());
-        Assertions.assertThrows(NoSuchElementException.class, () -> userService.followUser(2L, 1L));
+        Assertions.assertThrows(UserNotFoundException.class, () -> userService.followUser(2L, 1L));
     }
 
     @Test
     public void testFollowUserDoesNotWorkWhenSecondUserNotPresent() {
         userService.createUser(UserDto.builder().email("test1@test.com").password("password").role("ADMIN").build());
-        Assertions.assertThrows(NoSuchElementException.class, () -> userService.followUser(1L, 2L));
+        Assertions.assertThrows(UserNotFoundException.class, () -> userService.followUser(1L, 2L));
     }
 
     @Test
@@ -159,13 +170,13 @@ public class UserServiceTest {
     @Test
     public void testUnfollowUserDoesNotWorkWhenFirstUserNotPresent() {
         userService.createUser(UserDto.builder().email("test1@test.com").password("password").role("ADMIN").build());
-        Assertions.assertThrows(NoSuchElementException.class, () -> userService.unfollowUser(2L, 1L));
+        Assertions.assertThrows(UserNotFoundException.class, () -> userService.unfollowUser(2L, 1L));
     }
 
     @Test
     public void testUnfollowUserDoesNotWorkWhenSecondUserNotPresent() {
         userService.createUser(UserDto.builder().email("test1@test.com").password("password").role("ADMIN").build());
-        Assertions.assertThrows(NoSuchElementException.class, () -> userService.unfollowUser(1L, 2L));
+        Assertions.assertThrows(UserNotFoundException.class, () -> userService.unfollowUser(1L, 2L));
     }
 
     @Test
