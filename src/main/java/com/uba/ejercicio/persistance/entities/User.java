@@ -28,9 +28,9 @@ public class User {
     private Profile profile;
 
     @ManyToMany
-    private Set<User> followers;
+    private List<User> followers;
 
     @ManyToMany
-    private Set<User> following;
+    private List<User> following;
 
 }

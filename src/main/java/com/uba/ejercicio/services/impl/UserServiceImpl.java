@@ -42,6 +42,8 @@ public class UserServiceImpl implements UserService {
                 User.builder()
                     .email(user.getEmail())
                     .role(user.getRole())
+                    .followers(new ArrayList<>())
+                    .following(new ArrayList<>())
                     .password(passwordEncoder.encode(user.getPassword()))
                     .build()
         );
