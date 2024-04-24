@@ -12,12 +12,10 @@ import com.uba.ejercicio.persistance.repositories.HobbiesRepository;
 import com.uba.ejercicio.persistance.repositories.ProfileRepository;
 import com.uba.ejercicio.persistance.repositories.UserRepository;
 import com.uba.ejercicio.services.ProfileService;
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
