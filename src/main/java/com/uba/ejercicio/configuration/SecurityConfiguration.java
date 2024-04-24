@@ -53,6 +53,8 @@ public class SecurityConfiguration {
                                 .hasAnyAuthority(ADMIN_ROLE, USER_ROLE);
                         authorizeRequests.requestMatchers(HttpMethod.POST, "/api/v1/user/gender")
                                 .hasAuthority(ADMIN_ROLE);
+                        authorizeRequests.requestMatchers("/api/v1/user/*/follower", "/api/v1/user/*/following")
+                                .hasAnyAuthority(ADMIN_ROLE, USER_ROLE);
                         authorizeRequests.anyRequest().authenticated();
                     }
             )
