@@ -60,7 +60,7 @@ public class ProfileServiceTest {
     }
 
     @Test
-    public void testCreateProfileWithExistingHobby() throws Exception { //TODO puede haber un usuario que no tenga un perfil creado?
+    public void testCreateProfileWithExistingHobby() throws Exception {
         String exampleMail = "test@example.com";
         User user = User.builder().email(exampleMail).password("password").build();
         Hobby hobby = Hobby.builder().name("hobby").build();
@@ -87,7 +87,7 @@ public class ProfileServiceTest {
     }
 
     @Test
-    public void testCreateProfileWithNoExistingHobby() throws Exception { //TODO puede haber un usuario que no tenga un perfil creado?
+    public void testCreateProfileWithNoExistingHobby() throws Exception {
         String exampleMail = "test@example.com";
         User user = User.builder().email(exampleMail).password("password").build();
         Hobby hobby = Hobby.builder().name("hobby1").build();
@@ -114,7 +114,7 @@ public class ProfileServiceTest {
     }
 
     @Test
-    public void testGetUserProfile() throws Exception { //TODO puede haber un usuario que no tenga un perfil creado?
+    public void testGetUserProfile() throws Exception {
         String exampleMail = "test@example.com";
         User user = User.builder().email(exampleMail).password("password").build();
         Hobby hobby = Hobby.builder().name("hobby1").build();
@@ -141,7 +141,7 @@ public class ProfileServiceTest {
     }
 
     @Test
-    public void testModifyUserProfile() throws Exception { //TODO puede haber un usuario que no tenga un perfil creado?
+    public void testModifyUserProfile() throws Exception {
         String exampleMail = "test@example.com";
         User user = User.builder().email(exampleMail).password("password").build();
         Hobby hobby = Hobby.builder().name("hobby1").build();

@@ -1,6 +1,7 @@
 package com.uba.ejercicio.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -13,13 +14,13 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class ProfileResponseDto {
-    @NotNull
+    @NotBlank
     private String name;
 
-    @NotNull
+    @NotBlank
     private String lastName;
 
-    @NotNull
+    @NotBlank
     private String gender;
 
     @NotNull
