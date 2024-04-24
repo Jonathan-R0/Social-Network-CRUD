@@ -28,6 +28,9 @@ public class ProfileResponseDto {
     private Date birthDate;
 
     @NotNull
+    private byte[] photo;
+
+    @NotNull
     private List<String> hobbies;
 
 }
