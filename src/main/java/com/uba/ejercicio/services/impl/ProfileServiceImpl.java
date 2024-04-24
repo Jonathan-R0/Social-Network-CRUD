@@ -63,14 +63,16 @@ public class ProfileServiceImpl implements ProfileService {
                 () -> {
                     User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
                     Gender gender = genderRepository.findByName(profileInformation.getGender()).orElse(null);
-                    profileRepository.save(Profile.builder()
+                    Profile profile = Profile.builder()
                             .name(profileInformation.getName())
                             .lastName(profileInformation.getLastName())
                             .gender(gender)
                             .birthDate(profileInformation.getBirthDate())
                             .hobbies(getHobbies(profileInformation.getHobbies()))
                             .user(user)
-                            .build());
+                            .photo(profileInformation.getPhoto())
+                            .build();
+                    profileRepository.save(profile);
                 }
         );
     }
