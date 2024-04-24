@@ -1,7 +1,6 @@
 package com.uba.ejercicio.services;
 
 import com.uba.ejercicio.dto.UserDto;
-import com.uba.ejercicio.persistance.entities.Profile;
 import com.uba.ejercicio.persistance.entities.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
