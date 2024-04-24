@@ -1,9 +1,7 @@
 package com.uba.ejercicio.controllers;
 
 import com.uba.ejercicio.dto.ErrorResponseDto;
-import com.uba.ejercicio.exceptions.GenderNotFoundException;
-import com.uba.ejercicio.exceptions.UnavailableRoleException;
-import com.uba.ejercicio.exceptions.UserNotFoundException;
+import com.uba.ejercicio.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -25,7 +23,7 @@ public class ErrorController {
     @ResponseBody
     @ExceptionHandler(UnavailableRoleException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponseDto handleUnavailableRoleException(UnavailableRoleException ex) {
+    public ErrorResponseDto handleConflict(UnavailableRoleException ex) {
         return new ErrorResponseDto(ex);
     }
 
@@ -43,5 +41,25 @@ public class ErrorController {
         return new ErrorResponseDto(ex);
     }
 
+    @ResponseBody
+    @ExceptionHandler(value = {MessagingRuntimeException.class})
+    @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+    protected ErrorResponseDto handleConflict(MessagingRuntimeException ex) {
+        return new ErrorResponseDto(ex);
+    }
+
+    @ResponseBody
+    @ExceptionHandler(value = {TokenException.class})
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    protected ErrorResponseDto handleConflict(TokenException ex) {
+        return new ErrorResponseDto(ex);
+    }
+
+    @ResponseBody
+    @ExceptionHandler(value = {PasswordResetException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    protected ErrorResponseDto handleConflict(PasswordResetException ex) {
+        return new ErrorResponseDto(ex);
+    }
 
 }
