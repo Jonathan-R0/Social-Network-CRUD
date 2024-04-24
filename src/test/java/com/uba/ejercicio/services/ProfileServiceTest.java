@@ -57,12 +57,12 @@ public class ProfileServiceTest {
     }
 
     @Test
-    public void testThrowsWhenUserDoesNotExist() throws Exception {
+    public void testThrowsWhenUserDoesNotExist() {
         Assertions.assertThrows(UserNotFoundException.class, () -> profileService.getUserProfile(1L));
     }
 
     @Test
-    public void testCreateProfileWithExistingHobby() throws Exception {
+    public void testCreateProfileWithExistingHobby() {
         String exampleMail = "test@example.com";
         User user = User.builder().email(exampleMail).password("password").build();
         Hobby hobby = Hobby.builder().name("hobby").build();
@@ -89,7 +89,7 @@ public class ProfileServiceTest {
     }
 
     @Test
-    public void testCreateProfileWithNoExistingHobby() throws Exception {
+    public void testCreateProfileWithNoExistingHobby() {
         String exampleMail = "test@example.com";
         User user = User.builder().email(exampleMail).password("password").build();
         Hobby hobby = Hobby.builder().name("hobby1").build();
@@ -116,7 +116,7 @@ public class ProfileServiceTest {
     }
 
     @Test
-    public void testGetUserProfile() throws Exception {
+    public void testGetUserProfile() {
         String exampleMail = "test@example.com";
         User user = User.builder().email(exampleMail).password("password").build();
         Hobby hobby = Hobby.builder().name("hobby1").build();
@@ -143,7 +143,7 @@ public class ProfileServiceTest {
     }
 
     @Test
-    public void testModifyUserProfile() throws Exception {
+    public void testModifyUserProfile() {
         String exampleMail = "test@example.com";
         User user = User.builder().email(exampleMail).password("password").build();
         Hobby hobby = Hobby.builder().name("hobby1").build();
