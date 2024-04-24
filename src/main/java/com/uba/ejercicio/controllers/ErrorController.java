@@ -3,6 +3,7 @@ package com.uba.ejercicio.controllers;
 import com.uba.ejercicio.dto.ErrorResponseDto;
 import com.uba.ejercicio.exceptions.*;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -50,6 +51,13 @@ public class ErrorController {
     @ExceptionHandler(value = {TokenException.class})
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     protected ErrorResponseDto handleConflict(TokenException ex) {
+        return new ErrorResponseDto(ex);
+    }
+
+    @ResponseBody
+    @ExceptionHandler(value = {BadCredentialsException.class})
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    protected ErrorResponseDto handleConflict(BadCredentialsException ex) {
         return new ErrorResponseDto(ex);
     }
 
