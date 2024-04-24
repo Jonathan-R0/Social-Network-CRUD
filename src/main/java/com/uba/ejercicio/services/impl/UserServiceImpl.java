@@ -42,8 +42,7 @@ public class UserServiceImpl implements UserService {
                 User.builder()
                     .email(user.getEmail())
                     .role(user.getRole())
-                    .followers(new ArrayList<>())
-                    .following(new ArrayList<>())
+                    .follows(new ArrayList<>())
                     .password(passwordEncoder.encode(user.getPassword()))
                     .build()
         );
@@ -85,34 +84,37 @@ public class UserServiceImpl implements UserService {
         userRepository.delete(getUserByEmail(email));
     }
 
+    @Override
     public User getUserById(Long id) {
-        return userRepository.findById(id).orElseThrow();
+        return userRepository.findById(id).orElseThrow(); // TODO Create custom exception
     }
 
+    @Override
     public void followUser(Long followerId, Long followedId) {
         var follower = getUserById(followerId);
         var followed = getUserById(followedId);
-        follower.getFollowing().add(followed);
-        followed.getFollowers().add(follower);
-        userRepository.save(follower);
-        userRepository.save(followed);
+        if (!follower.getFollows().contains(followed)) {
+            follower.getFollows().add(followed);
+            userRepository.save(follower);
+        }
     }
 
+    @Override
     public void unfollowUser(Long followerId, Long followedId) {
         var follower = getUserById(followerId);
         var followed = getUserById(followedId);
-        follower.getFollowing().remove(followed);
-        followed.getFollowers().remove(follower);
+        follower.getFollows().remove(followed);
         userRepository.save(follower);
-        userRepository.save(followed);
     }
 
+    @Override
     public List<String> getFollowers(User user) {
-        return user.getFollowers().stream().map(User::getEmail).toList();
+        return userRepository.getFollowers(user.getId()).stream().map(User::getEmail).toList();
     }
 
+    @Override
     public List<String> getFollowing(User user) {
-        return user.getFollowing().stream().map(User::getEmail).toList();
+        return user.getFollows().stream().map(User::getEmail).toList();
     }
 
     @Override
