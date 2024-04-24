@@ -5,6 +5,7 @@ import com.uba.ejercicio.exceptions.UnavailableRoleException;
 import com.uba.ejercicio.persistance.entities.User;
 import com.uba.ejercicio.persistance.repositories.RefreshTokenRepository;
 import com.uba.ejercicio.persistance.repositories.UserRepository;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -75,11 +76,12 @@ public class UserServiceTest {
         Assertions.assertThrows(NoSuchElementException.class, () -> userService.getUserByEmail(exampleMail));
     }
 
-    //Test para el método getUserById exitoso y fracaso
     @Test
     public void testGetUserByIdDoesReturnOneResultWhenOneUserIsPresent() {
         String exampleMail = "test@example.com";
-        User user = userService.createUser(UserDto.builder().email(exampleMail).password("password").build());
+        User user = userService.createUser(
+                UserDto.builder().email(exampleMail).password("password").role("ADMIN").build()
+        );
         User result = userService.getUserById(user.getId());
         Assertions.assertNotNull(result);
         Assertions.assertEquals(exampleMail, result.getEmail());
@@ -88,9 +90,81 @@ public class UserServiceTest {
     public void testGetUserByIdDoesNotReturnAnythingWhenNoUsersArePresent() {
         Assertions.assertThrows(NoSuchElementException.class, () -> userService.getUserById(1L));
     }
-    //Test para el método followUser exitoso y fracaso
-    //Test para el método unfollowUser exitoso y fracaso
-    //Test para el método getFollowers lista vacia y no vacia
+
+    private void createPairOfUsers(String email1, String email2) {
+        userService.createUser(UserDto.builder().email(email1).password("password").role("ADMIN").build());
+        userService.createUser(UserDto.builder().email(email2).password("password").role("ADMIN").build());
+    }
+
+    @Test
+    @Transactional
+    public void testGetFollowersReturnsEmptyListWhenNoFollowers() {
+        String email1 = "test1@test.com";
+        String email2 = "test2@test.com";
+        createPairOfUsers(email1, email2);
+        List<String> followers = userService.getFollowers(userService.getUserByEmail(email1));
+        Assertions.assertTrue(followers.isEmpty());
+    }
+
+    @Test
+    @Transactional
+    public void testGetFollowersReturnsListWithOneFollow() {
+        String email1 = "test1@test.com";
+        String email2 = "test2@test.com";
+        createPairOfUsers(email1, email2);
+        userService.followUser(userService.getUserByEmail(email1).getId(), userService.getUserByEmail(email2).getId());
+        List<String> following = userService.getFollowing(userService.getUserByEmail(email1));
+        List<String> followers = userService.getFollowers(userService.getUserByEmail(email2));
+        Assertions.assertEquals(1, following.size());
+        Assertions.assertEquals(1, followers.size());
+    }
+
+    @Test
+    @Transactional
+    public void testFollowUserWorks() {
+        String email1 = "test1@test.com";
+        String email2 = "test2@test.com";
+        createPairOfUsers(email1, email2);
+        userService.followUser(userService.getUserByEmail(email1).getId(), userService.getUserByEmail(email2).getId());
+        Assertions.assertEquals(1, userService.getFollowing(userService.getUserByEmail(email1)).size());
+        Assertions.assertEquals(1, userService.getFollowers(userService.getUserByEmail(email2)).size());
+    }
+
+    @Test
+    public void testFollowUserDoesNotWorkWhenFirstUserNotPresent() {
+        userService.createUser(UserDto.builder().email("test1@test.com").password("password").role("ADMIN").build());
+        Assertions.assertThrows(NoSuchElementException.class, () -> userService.followUser(2L, 1L));
+    }
+
+    @Test
+    public void testFollowUserDoesNotWorkWhenSecondUserNotPresent() {
+        userService.createUser(UserDto.builder().email("test1@test.com").password("password").role("ADMIN").build());
+        Assertions.assertThrows(NoSuchElementException.class, () -> userService.followUser(1L, 2L));
+    }
+
+    @Test
+    @Transactional
+    public void testUnfollowUserWorks() {
+        String email1 = "test1@test.com";
+        String email2 = "test2@test.com";
+        createPairOfUsers(email1, email2);
+        userService.followUser(userService.getUserByEmail(email1).getId(), userService.getUserByEmail(email2).getId());
+        userService.unfollowUser(userService.getUserByEmail(email1).getId(), userService.getUserByEmail(email2).getId());
+        Assertions.assertEquals(0, userService.getFollowing(userService.getUserByEmail(email1)).size());
+        Assertions.assertEquals(0, userService.getFollowers(userService.getUserByEmail(email2)).size());
+    }
+
+    @Test
+    public void testUnfollowUserDoesNotWorkWhenFirstUserNotPresent() {
+        userService.createUser(UserDto.builder().email("test1@test.com").password("password").role("ADMIN").build());
+        Assertions.assertThrows(NoSuchElementException.class, () -> userService.unfollowUser(2L, 1L));
+    }
+
+    @Test
+    public void testUnfollowUserDoesNotWorkWhenSecondUserNotPresent() {
+        userService.createUser(UserDto.builder().email("test1@test.com").password("password").role("ADMIN").build());
+        Assertions.assertThrows(NoSuchElementException.class, () -> userService.unfollowUser(1L, 2L));
+    }
 
     @Test
     public void testDeleteUserByEmailDeletesSession() {
