@@ -14,6 +14,19 @@ public interface UserService extends UserDetailsService {
 
     void deleteUserByEmail(String email);
 
+    User getUserById(Long id);
+
+    void followUser(Long follower, Long followed);
+
+    void unfollowUser(Long follower, Long followed);
+
+    List<String> getFollowers(User user);
+
+    List<String> getFollowing(User user);
+
     void deleteAllFromList(List<String> emails);
 
+    void updatePassword(String email, String oldPassword, String newPassword);
+
+    void updateUser(User user);
 }
