@@ -43,15 +43,9 @@ public class ProfileServiceImpl implements ProfileService {
 
     private List<Hobby> getHobbies(List<String> dtoHobbies) {
         return dtoHobbies.stream()
-                .map(hobbyName -> hobbyRepository.findByName(hobbyName)
-                        .orElseGet(() -> {
-                            Hobby newHobby = Hobby.builder()
-                                    .name(hobbyName)
-                                    .build();
-                            hobbyRepository.save(newHobby);
-                            return newHobby;
-                        }))
-                .collect(Collectors.toList());
+                         .map(hobbyName -> hobbyRepository.findByName(hobbyName)
+                         .orElseGet(() -> hobbyRepository.save(Hobby.builder().name(hobbyName).build())))
+                         .collect(Collectors.toList());
     }
 
     @Override
