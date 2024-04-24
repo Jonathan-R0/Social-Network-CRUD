@@ -26,4 +26,5 @@ public class User {
     @OneToOne
     private Profile profile;
 
+    private boolean isEnabled;
 }

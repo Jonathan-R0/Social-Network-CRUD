@@ -78,6 +78,14 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+    @Override
+    public void validateUser(String email) {
+
+        User user = getUserByEmail(email);
+        user.setEnabled(true);
+        userRepository.save(user);
+    }
+
     private void deleteUserTokensAndUserFromEmail(String email) {
         refreshTokenRepository.deleteById(email);
         userRepository.delete(getUserByEmail(email));
@@ -94,4 +102,7 @@ public class UserServiceImpl implements UserService {
                 true, true, true, true, authorities);
 
     }
+
+
+
 }

@@ -184,5 +184,19 @@ public class UserServiceTest {
         Assertions.assertThrows(RuntimeException.class,
                 () -> userService.updatePassword(exampleMail, password + ".", "newPassword"));
     }
+
+
+    @Test
+    public void testValidateUser() {
+
+        String exampleMail = "test@example.com";
+        UserDto dto = UserDto.builder().email(exampleMail).password("password").role("ADMIN").build();
+        User result = userService.createUser(dto);
+        User fetchedData = userRepository.findByEmail(exampleMail).orElseThrow();
+        Assertions.assertFalse(fetchedData.isEnabled());
+        userService.validateUser(exampleMail);
+        User fetchedData2 = userRepository.findByEmail(exampleMail).orElseThrow();
+        Assertions.assertTrue(fetchedData2.isEnabled());
+    }
 }
 

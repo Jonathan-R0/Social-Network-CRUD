@@ -19,4 +19,6 @@ public interface UserService extends UserDetailsService {
     void updatePassword(String email, String oldPassword, String newPassword);
 
     void updateUser(User user);
+
+    void validateUser(String email);
 }
