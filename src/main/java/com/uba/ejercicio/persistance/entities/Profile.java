@@ -1,17 +1,19 @@
 package com.uba.ejercicio.persistance.entities;
 
+import com.uba.ejercicio.dto.ProfileResponseDto;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 @Table
 public class Profile {
     @Id
@@ -23,6 +25,7 @@ public class Profile {
 
     private String lastName;
 
+    @Lob
     private byte[] photo;
 
     private Date birthDate;
@@ -36,5 +39,16 @@ public class Profile {
 
     @OneToOne
     private User user;
+
+    public ProfileResponseDto profileToDTO() {
+        return ProfileResponseDto.builder()
+                .name(name)
+                .lastName(lastName)
+                .gender(gender.getName())
+                .birthDate(birthDate)
+                .hobbies(hobbies.stream().map(Hobby::getName).collect(Collectors.toList()))
+                .build();
+    }
+
 
 }
