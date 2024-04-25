@@ -53,7 +53,7 @@ public class PasswordResetServiceImpl implements PasswordResetService {
                 .user(user)
                 .expirationDate(LocalDateTime.now().plusSeconds(duration))
                 .build();
-        String link = clientUrl + "/password/reset?token=" + token + "&id=" + user.getId();
+        String link = clientUrl + "password/reset?token=" + token + "&id=" + user.getId();
         emailService.sendEmail(email, "Password reset", "Open this link to reset your password: " + link);
         passwordResetRepository.save(passwordReset);
     }
