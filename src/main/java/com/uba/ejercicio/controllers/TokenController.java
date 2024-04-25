@@ -40,4 +40,12 @@ public class TokenController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping(value="/user/{userId}/validation/{token}")
+    public ResponseEntity<Void> validate(
+            @PathVariable("userId") Long userId,
+            @PathVariable("token") String token) {
+        tokenService.validateAccount(userId, token);
+        return ResponseEntity.ok().build();
+    }
+
 }
