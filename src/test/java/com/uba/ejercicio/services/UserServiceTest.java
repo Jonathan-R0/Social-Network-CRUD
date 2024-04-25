@@ -179,12 +179,19 @@ public class UserServiceTest {
         Assertions.assertThrows(UserNotFoundException.class, () -> userService.unfollowUser(1L, 2L));
     }
 
+    private void activateUser(String email) {
+        User user = userService.getUserByEmail(email);
+        user.setEnabled(true);
+        userRepository.save(user);
+    }
+
     @Test
     public void testDeleteUserByEmailDeletesSession() {
         String exampleMail = "test@example.com";
         String password = "password";
         UserDto dto = UserDto.builder().email(exampleMail).password(password).role("ADMIN").build();
         userService.createUser(dto);
+        activateUser(exampleMail);
         tokenService.authResponse(exampleMail, password);
         userService.deleteUserByEmail(exampleMail);
         Assertions.assertEquals(0, refreshTokenRepository.count());
@@ -261,6 +268,9 @@ public class UserServiceTest {
         createUser(email1, password);
         createUser(email2, password);
         createUser(email3, password);
+        activateUser(email1);
+        activateUser(email2);
+        activateUser(email3);
         tokenService.authResponse(email1, password);
         tokenService.authResponse(email2, password);
         tokenService.authResponse(email3, password);

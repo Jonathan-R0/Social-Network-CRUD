@@ -37,7 +37,7 @@ public class TokenServiceTest {
     private PasswordEncoder passwordEncoder;
 
     private void createUser(String email, String password) {
-        userRepository.save(User.builder().email(email).password(passwordEncoder.encode(password)).role("USER").build());
+        userRepository.save(User.builder().email(email).enabled(true).password(passwordEncoder.encode(password)).role("USER").build());
     }
 
     @BeforeEach
