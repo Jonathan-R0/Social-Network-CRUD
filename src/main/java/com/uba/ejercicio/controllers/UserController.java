@@ -20,7 +20,7 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<Void> createUser(@RequestBody @Valid UserDto user) {
-        userService.createUser(user);
+        tokenService.createAccountValidationTokenAndSendEmail(userService.createUser(user));
         return ResponseEntity.ok().build();
     }
 

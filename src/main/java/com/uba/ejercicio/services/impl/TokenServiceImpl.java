@@ -3,8 +3,12 @@ package com.uba.ejercicio.services.impl;
 import com.uba.ejercicio.configuration.TokenManager;
 import com.uba.ejercicio.dto.LoginResponseDto;
 import com.uba.ejercicio.exceptions.TokenException;
+import com.uba.ejercicio.persistance.entities.AccountValidationToken;
 import com.uba.ejercicio.persistance.entities.RefreshToken;
+import com.uba.ejercicio.persistance.entities.User;
+import com.uba.ejercicio.persistance.repositories.AccountValidationTokenRepository;
 import com.uba.ejercicio.persistance.repositories.RefreshTokenRepository;
+import com.uba.ejercicio.services.EmailService;
 import com.uba.ejercicio.services.TokenService;
 import com.uba.ejercicio.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +19,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.UUID;
 
 @Service
 public class TokenServiceImpl implements TokenService {
@@ -30,6 +36,18 @@ public class TokenServiceImpl implements TokenService {
 
     @Autowired
     private RefreshTokenRepository refreshTokenRepository;
+
+    @Autowired
+    private AccountValidationTokenRepository accountValidationTokenRepository;
+
+    @Autowired
+    private EmailService emailService;
+
+    @Value("${client.url}")
+    private String clientUrl;
+
+    @Value("${jwt.access.duration}")
+    private int accessDuration;
 
     @Value("${jwt.refresh.duration}")
     private int refreshDuration;
@@ -72,5 +90,30 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public void destroySession(String email) {
         refreshTokenRepository.deleteById(email);
+    }
+
+    @Override
+    public void createAccountValidationTokenAndSendEmail(User user) {
+        UUID token = UUID.randomUUID();
+        accountValidationTokenRepository.save(
+                AccountValidationToken.builder()
+                        .userId(user.getId())
+                        .token(token.toString())
+                        .expirationDate(new Date(System.currentTimeMillis() + accessDuration * 1000L))
+                        .build()
+        );
+        String link = clientUrl + "auth/validate-account?token=" + token + "&id=" + user.getId();
+        emailService.sendEmail(user.getEmail(), "Validate your account",
+                "Click here to activate your account: " + link);
+    }
+
+    @Override
+    public void validateAccount(Long userId, String token) {
+        AccountValidationToken accountValidationToken = accountValidationTokenRepository.findById(userId)
+                .orElseThrow(() -> new TokenException("User invalid or not found"));
+        if (!accountValidationToken.getToken().equals(token)) throw new TokenException("Invalid token");
+        if (accountValidationToken.getExpirationDate().before(new Date())) throw new TokenException("Token expired");
+        accountValidationTokenRepository.delete(accountValidationToken);
+        userService.validateAccount(userId);
     }
 }

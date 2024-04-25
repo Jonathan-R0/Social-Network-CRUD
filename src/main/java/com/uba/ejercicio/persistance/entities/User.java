@@ -36,4 +36,6 @@ public class User {
     )
     private List<User> follows; // follower -> followed
 
+    private Boolean enabled;
+
 }
