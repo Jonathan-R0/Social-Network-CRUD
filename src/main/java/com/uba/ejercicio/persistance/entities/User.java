@@ -27,4 +27,8 @@ public class User {
     private Profile profile;
 
     private boolean isConfirmated;
+
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private ConfirmationToken confirmationToken;
 }

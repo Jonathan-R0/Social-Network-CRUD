@@ -2,6 +2,7 @@ package com.uba.ejercicio.controllers;
 
 import com.uba.ejercicio.dto.UserDto;
 import com.uba.ejercicio.dto.UserListDto;
+import com.uba.ejercicio.persistance.entities.User;
 import com.uba.ejercicio.services.EmailService;
 import com.uba.ejercicio.services.TokenService;
 import com.uba.ejercicio.services.UserService;
@@ -29,9 +30,10 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<Void> createUser(@RequestBody @Valid UserDto user) {
-        userService.createUser(user);
+        User createdUser = userService.createUser(user);
 
-        String link = clientUrl + "/user/validate?&email=" + user.getEmail();
+
+        String link = clientUrl + "/user/validate?&token=" + createdUser.getConfirmationToken().getConfirmationToken();
         emailService.sendEmail(user.getEmail(), "Validar usuario", "Open this link to validate your mail: " + link);
         return ResponseEntity.ok().build();
     }
