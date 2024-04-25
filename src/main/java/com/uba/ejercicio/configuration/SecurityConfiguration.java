@@ -28,7 +28,8 @@ public class SecurityConfiguration {
             "/auth/login",
             "/auth/logout",
             "/user/password/forgot",
-            "/user/password/*/recover/*"
+            "/user/password/*/recover/*",
+            "/auth/user/*/validation/**"
     };
 
     @Autowired
