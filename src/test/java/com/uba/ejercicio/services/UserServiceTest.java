@@ -3,6 +3,7 @@ package com.uba.ejercicio.services;
 import com.uba.ejercicio.dto.UserDto;
 import com.uba.ejercicio.exceptions.SelfFollowException;
 import com.uba.ejercicio.exceptions.UnavailableRoleException;
+import com.uba.ejercicio.exceptions.UserAlreadyExistsException;
 import com.uba.ejercicio.exceptions.UserNotFoundException;
 import com.uba.ejercicio.persistance.entities.User;
 import com.uba.ejercicio.persistance.repositories.*;
@@ -308,6 +309,15 @@ public class UserServiceTest {
     @Test
     public void testCantUnfollowYourself() {
         Assertions.assertThrows(SelfFollowException.class, () -> userService.unfollowUser(1L, 1L));
+    }
+
+    @Test
+    public void testCreateAlreadyExistingUser() {
+        String exampleMail = "test@example.com";
+        String password = "password";
+        UserDto dto = UserDto.builder().email(exampleMail).password(password).role("ADMIN").build();
+        userService.createUser(dto);
+        Assertions.assertThrows(UserAlreadyExistsException.class, () -> userService.createUser(dto));
     }
 }
 

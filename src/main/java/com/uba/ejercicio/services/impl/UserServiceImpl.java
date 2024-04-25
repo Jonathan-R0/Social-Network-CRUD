@@ -1,10 +1,7 @@
 package com.uba.ejercicio.services.impl;
 
 import com.uba.ejercicio.dto.UserDto;
-import com.uba.ejercicio.exceptions.PasswordResetException;
-import com.uba.ejercicio.exceptions.SelfFollowException;
-import com.uba.ejercicio.exceptions.UnavailableRoleException;
-import com.uba.ejercicio.exceptions.UserNotFoundException;
+import com.uba.ejercicio.exceptions.*;
 import com.uba.ejercicio.persistance.entities.User;
 import com.uba.ejercicio.persistance.repositories.RefreshTokenRepository;
 import com.uba.ejercicio.persistance.repositories.UserRepository;
@@ -40,7 +37,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(UserDto user) {
-        if (!VALID_ROLES.contains(user.getRole())) throw new UnavailableRoleException(user.getRole());
+        if (!VALID_ROLES.contains(user.getRole()))
+            throw new UnavailableRoleException(user.getRole());
+        if (userRepository.findByEmail(user.getEmail()).isPresent())
+            throw new UserAlreadyExistsException();
         return userRepository.save(
                 User.builder()
                     .email(user.getEmail())

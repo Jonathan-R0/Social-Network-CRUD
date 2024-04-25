@@ -75,4 +75,11 @@ public class ErrorController {
         return new ErrorResponseDto(ex);
     }
 
+    @ResponseBody
+    @ExceptionHandler(value = {UserAlreadyExistsException.class})
+    @ResponseStatus(HttpStatus.CONFLICT)
+    protected ErrorResponseDto handleConflict(UserAlreadyExistsException ex) {
+        return new ErrorResponseDto(ex);
+    }
+
 }
