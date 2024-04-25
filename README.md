@@ -15,7 +15,7 @@ Luis Waldman 79279
 Se levanta con el siguiente comando:
 
 ```bash
-docker-compose up
+docker compose up
 ```
 
 ## Front End Mock
