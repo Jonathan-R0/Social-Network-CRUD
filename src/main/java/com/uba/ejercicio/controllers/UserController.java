@@ -2,6 +2,7 @@ package com.uba.ejercicio.controllers;
 
 import com.uba.ejercicio.configuration.UserCheckMiddleware;
 import com.uba.ejercicio.dto.*;
+import com.uba.ejercicio.persistance.entities.User;
 import com.uba.ejercicio.services.TokenService;
 import com.uba.ejercicio.services.UserService;
 import jakarta.validation.Valid;
@@ -23,9 +24,10 @@ public class UserController {
     private UserCheckMiddleware userCheckMiddleware;
 
     @PostMapping
-    public ResponseEntity<Void> createUser(@RequestBody @Valid UserDto user) {
-        tokenService.createAccountValidationTokenAndSendEmail(userService.createUser(user));
-        return ResponseEntity.ok().build();
+    public ResponseEntity<UserResponseDto> createUser(@RequestBody @Valid UserDto user) {
+        User createdUser = userService.createUser(user);
+        tokenService.createAccountValidationTokenAndSendEmail(createdUser);
+        return ResponseEntity.ok().body(createdUser.toUserResponseDto());
     }
 
     @DeleteMapping("/self")
@@ -42,36 +44,30 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/{userId}/follower")
+    @PostMapping("/follower")
     public ResponseEntity<Void> followUser(
             @RequestHeader("Authorization") String tokenHeader,
-            @PathVariable("userId") Long followerId,
             @RequestBody @Valid FollowRequestDto followRequest
         ) {
-        userCheckMiddleware.checkUser(followerId, tokenHeader);
-        userService.followUser(followerId, followRequest.getFollow());
+        userService.followUser(userCheckMiddleware.getUserIdFromHeader(tokenHeader), followRequest.getFollow());
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{userId}/following")
+    @DeleteMapping("/following")
     public ResponseEntity<Void> deleteFollowing(
             @RequestHeader("Authorization") String tokenHeader,
-            @PathVariable("userId") Long followerId,
             @RequestBody @Valid UnfollowRequestDto unfollowRequest
     ) {
-        userCheckMiddleware.checkUser(followerId, tokenHeader);
-        userService.unfollowUser(followerId, unfollowRequest.getUnfollow());
+        userService.unfollowUser(userCheckMiddleware.getUserIdFromHeader(tokenHeader), unfollowRequest.getUnfollow());
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{userId}/follower")
+    @DeleteMapping("/follower")
     public ResponseEntity<Void> deleteFollower(
             @RequestHeader("Authorization") String tokenHeader,
-            @PathVariable("userId") Long followedId,
             @RequestBody @Valid UnfollowRequestDto unfollowRequest
     ) {
-        userCheckMiddleware.checkUser(followedId, tokenHeader);
-        userService.unfollowUser(unfollowRequest.getUnfollow(), followedId);
+        userService.unfollowUser(unfollowRequest.getUnfollow(), userCheckMiddleware.getUserIdFromHeader(tokenHeader));
         return ResponseEntity.ok().build();
     }
 

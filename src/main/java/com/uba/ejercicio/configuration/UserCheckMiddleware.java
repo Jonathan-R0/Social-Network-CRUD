@@ -19,12 +19,9 @@ public class UserCheckMiddleware {
         if (tokenHeader == null || !tokenHeader.startsWith("Bearer ")) throw new TokenException("Invalid token.");
     }
 
-    public void checkUser(Long userId, String tokenHeader) {
+    public Long getUserIdFromHeader(String tokenHeader) {
         checkTokenHeader(tokenHeader);
-        String emailFromToken = tokenService.getEmailFromHeader(tokenHeader);
-        String email = userService.getUserById(userId).getEmail();
-        if (!email.equals(emailFromToken))
-            throw new TokenException("Invalid user.");
+        return userService.getUserByEmail(tokenService.getEmailFromHeader(tokenHeader)).getId();
     }
 
 }

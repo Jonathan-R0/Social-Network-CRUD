@@ -22,39 +22,33 @@ public class ProfileController {
     @Autowired
     private UserCheckMiddleware userCheckMiddleware;
 
-    @GetMapping("/{userId}/profile")
+    @GetMapping("/profile")
     public ResponseEntity<ProfileResponseDto> getProfile(
-            @RequestHeader("Authorization") String tokenHeader,
-            @PathVariable Long userId
+            @RequestHeader("Authorization") String tokenHeader
     ) {
-        userCheckMiddleware.checkUser(userId, tokenHeader);
-        Profile profile = profileService.getUserProfile(userId);
+        Profile profile = profileService.getUserProfile(userCheckMiddleware.getUserIdFromHeader(tokenHeader));
         return ResponseEntity.ok(profile.profileToDTO());
     }
 
-    @PostMapping("/{userId}/profile")
+    @PostMapping("/profile")
     public ResponseEntity<Void> createProfile(
             @RequestHeader("Authorization") String tokenHeader,
-            @PathVariable Long userId,
             @RequestBody @Valid ProfileResponseDto profileInformation
     ) {
-        userCheckMiddleware.checkUser(userId, tokenHeader);
-        profileService.createProfile(userId, profileInformation);
+        profileService.createProfile(userCheckMiddleware.getUserIdFromHeader(tokenHeader), profileInformation);
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/{userId}/profile")
+    @PutMapping("/profile")
     public ResponseEntity<Void> modifyProfile(
             @RequestHeader("Authorization") String tokenHeader,
-            @PathVariable Long userId,
             @RequestBody @Valid ProfileResponseDto profileInformation
     ) {
-        userCheckMiddleware.checkUser(userId, tokenHeader);
-        profileService.modifyProfile(userId, profileInformation);
+        profileService.modifyProfile(userCheckMiddleware.getUserIdFromHeader(tokenHeader), profileInformation);
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/profile")
+    @GetMapping("/profiles")
     public ResponseEntity<List<ProfileResponseDto>> getProfiles() {
         return ResponseEntity.ok(profileService.getUserProfiles());
     }

@@ -1,5 +1,6 @@
 package com.uba.ejercicio.persistance.entities;
 
+import com.uba.ejercicio.dto.UserResponseDto;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.*;
@@ -34,4 +35,11 @@ public class User {
 
     private Boolean enabled;
 
+    public UserResponseDto toUserResponseDto() {
+        return UserResponseDto.builder()
+                .email(email)
+                .role(role)
+                .id(id)
+                .build();
+    }
 }
