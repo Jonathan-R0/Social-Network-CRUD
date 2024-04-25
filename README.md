@@ -12,6 +12,12 @@ Luis Waldman 79279
 
 ## Iniciar el Servicio
 
+Primero se debe definir una red compartida entre los contenedores de Docker. Se crea con el siguiente comando:
+
+```bash
+docker network create tdd-network
+```
+
 Se levanta con el siguiente comando:
 
 ```bash
