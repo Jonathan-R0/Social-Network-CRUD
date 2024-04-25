@@ -68,4 +68,11 @@ public class ErrorController {
         return new ErrorResponseDto(ex);
     }
 
+    @ResponseBody
+    @ExceptionHandler(value = {SelfFollowException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    protected ErrorResponseDto handleConflict(SelfFollowException ex) {
+        return new ErrorResponseDto(ex);
+    }
+
 }

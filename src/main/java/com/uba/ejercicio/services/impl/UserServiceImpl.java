@@ -2,6 +2,7 @@ package com.uba.ejercicio.services.impl;
 
 import com.uba.ejercicio.dto.UserDto;
 import com.uba.ejercicio.exceptions.PasswordResetException;
+import com.uba.ejercicio.exceptions.SelfFollowException;
 import com.uba.ejercicio.exceptions.UnavailableRoleException;
 import com.uba.ejercicio.exceptions.UserNotFoundException;
 import com.uba.ejercicio.persistance.entities.User;
@@ -101,6 +102,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void followUser(Long followerId, Long followedId) {
+        if (followerId.equals(followedId)) throw new SelfFollowException();
         var follower = getUserById(followerId);
         var followed = getUserById(followedId);
         if (!follower.getFollows().contains(followed)) {
@@ -111,6 +113,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void unfollowUser(Long followerId, Long followedId) {
+        if (followerId.equals(followedId)) throw new SelfFollowException();
         var follower = getUserById(followerId);
         var followed = getUserById(followedId);
         follower.getFollows().remove(followed);

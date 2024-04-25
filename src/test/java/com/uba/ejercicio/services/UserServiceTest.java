@@ -1,6 +1,7 @@
 package com.uba.ejercicio.services;
 
 import com.uba.ejercicio.dto.UserDto;
+import com.uba.ejercicio.exceptions.SelfFollowException;
 import com.uba.ejercicio.exceptions.UnavailableRoleException;
 import com.uba.ejercicio.exceptions.UserNotFoundException;
 import com.uba.ejercicio.persistance.entities.User;
@@ -297,6 +298,16 @@ public class UserServiceTest {
         userService.createUser(dto);
         Assertions.assertThrows(RuntimeException.class,
                 () -> userService.updatePassword(exampleMail, password + ".", "newPassword"));
+    }
+
+    @Test
+    public void testCantFollowYourself() {
+        Assertions.assertThrows(SelfFollowException.class, () -> userService.followUser(1L, 1L));
+    }
+
+    @Test
+    public void testCantUnfollowYourself() {
+        Assertions.assertThrows(SelfFollowException.class, () -> userService.unfollowUser(1L, 1L));
     }
 }
 
