@@ -65,6 +65,8 @@ public class ProfileServiceImpl implements ProfileService {
                             .photo(profileInformation.getPhoto())
                             .build();
                     profileRepository.save(profile);
+                    user.setProfile(profile);
+                    userRepository.save(user);
                 }
         );
     }
