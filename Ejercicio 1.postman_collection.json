@@ -18,20 +18,13 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{url}}/user/:userId/profile",
+									"raw": "{{url}}/user/profile",
 									"host": [
 										"{{url}}"
 									],
 									"path": [
 										"user",
-										":userId",
 										"profile"
-									],
-									"variable": [
-										{
-											"key": "userId",
-											"value": ""
-										}
 									]
 								}
 							},
@@ -42,6 +35,33 @@
 							"request": {
 								"method": "GET",
 								"header": [],
+								"url": {
+									"raw": "{{url}}/user/profiles",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"user",
+										"profiles"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Profile",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"John\",\r\n    \"lastName\": \"Doe\",\r\n    \"photo\": \"iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==\",\r\n    \"birthDate\": \"01-01-2000\",\r\n    \"gender\": \"male\",\r\n    \"hobbies\": [\"painting\"] \r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
 								"url": {
 									"raw": "{{url}}/user/profile",
 									"host": [
@@ -58,45 +78,11 @@
 						{
 							"name": "Profile",
 							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"name\": \"John\",\r\n    \"surname\": \"Doe\",\r\n    \"picture\": \"base64image\",\r\n    \"birth_date\": \"01/01/2000\",\r\n    \"gender\": \"male\",\r\n    \"hobbies\": [\"coding\", \"debugging\"] \r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{url}}/user/:userId/profile",
-									"host": [
-										"{{url}}"
-									],
-									"path": [
-										"user",
-										":userId",
-										"profile"
-									],
-									"variable": [
-										{
-											"key": "userId",
-											"value": ""
-										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Profile",
-							"request": {
 								"method": "PUT",
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"name\": \"John\",\r\n    \"surname\": \"Doe\",\r\n    \"picture\": \"base64image\",\r\n    \"birth_date\": \"01/01/2000\",\r\n    \"gender\": \"male\",\r\n    \"hobbies\": [\"coding\", \"debugging\"] \r\n}",
+									"raw": "{\r\n    \"name\": \"Johna\",\r\n    \"lastName\": \"Doea\",\r\n    \"photo\": \"iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJGGG==\",\r\n    \"birthDate\": \"2010-01-01\",\r\n    \"gender\": \"female\",\r\n    \"hobbies\": [\"skateboarding\"] \r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -104,20 +90,13 @@
 									}
 								},
 								"url": {
-									"raw": "{{url}}/user/:userId/profile",
+									"raw": "{{url}}/user/profile",
 									"host": [
 										"{{url}}"
 									],
 									"path": [
 										"user",
-										":userId",
 										"profile"
-									],
-									"variable": [
-										{
-											"key": "userId",
-											"value": ""
-										}
 									]
 								}
 							},
@@ -223,9 +202,9 @@
 									}
 								},
 								"url": {
-									"raw": "{{url}}/user/password/forgot",
+									"raw": "{{baseUrl}}/user/password/forgot",
 									"host": [
-										"{{url}}"
+										"{{baseUrl}}"
 									],
 									"path": [
 										"user",
@@ -246,7 +225,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"password\": \"Password123\"\r\n}",
+									"raw": "{\r\n    \"token\": \"Password123\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -254,14 +233,14 @@
 									}
 								},
 								"url": {
-									"raw": "{{url}}/user/:userId/password/recover/:code",
+									"raw": "{{baseUrl}}/user/password/:userId/recover/:code",
 									"host": [
-										"{{url}}"
+										"{{baseUrl}}"
 									],
 									"path": [
 										"user",
-										":userId",
 										"password",
+										":userId",
 										"recover",
 										":code"
 									],
@@ -286,7 +265,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"old_password\": \"Password123\",\r\n    \"new_password\": \"NewPassword123\"\r\n}",
+									"raw": "{\r\n    \"old_password\": \"Password123\",\r\n    \"new_password\": \"Password_123\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -294,13 +273,42 @@
 									}
 								},
 								"url": {
-									"raw": "{{url}}/user/password",
+									"raw": "{{baseUrl}}/user/password",
 									"host": [
-										"{{url}}"
+										"{{baseUrl}}"
 									],
 									"path": [
 										"user",
 										"password"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Account Validation",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/auth/user/:userId/validation",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"auth",
+										"user",
+										":userId",
+										"validation"
+									],
+									"variable": [
+										{
+											"key": "userId",
+											"value": ""
+										}
 									]
 								}
 							},
@@ -318,7 +326,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"johndoe4@test.com\",\r\n    \"password\": \"Password123\",\r\n    \"role\": \"USER\"\r\n}",
+							"raw": "{\r\n    \"email\": \"johndoe@test.com\",\r\n    \"password\": \"Password123\",\r\n    \"role\": \"ADMIN\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -362,7 +370,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"emails\": [\"test8@test.com\"] \r\n}",
+							"raw": "{\r\n    \"emails\": [\"johndoe@test.com\"] \r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -456,7 +464,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"test@test.com\",\r\n    \"password\": \"Password123\"\r\n}",
+							"raw": "{\r\n    \"email\": \"johndoe@test.com\",\r\n    \"password\": \"Password123\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -540,7 +548,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"followed\": \"personIWantToFollowId\"\r\n}",
+							"raw": "{\r\n    \"follow\": \"52\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -548,20 +556,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}/user/:userId/follower",
+							"raw": "{{url}}/user/follower",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"user",
-								":userId",
 								"follower"
-							],
-							"variable": [
-								{
-									"key": "userId",
-									"value": ""
-								}
 							]
 						}
 					},
@@ -574,7 +575,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"to_unfollow\": [\"badUserId\"]\r\n}",
+							"raw": "{\r\n    \"unfollow\": 102\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -582,20 +583,40 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}/user/:userId/follower",
+							"raw": "{{url}}/user/follower",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"user",
-								":userId",
 								"follower"
-							],
-							"variable": [
-								{
-									"key": "userId",
-									"value": ""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Following",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"unfollow\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
 								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/user/following",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user",
+								"following"
 							]
 						}
 					},
@@ -644,41 +665,7 @@
 							"variable": [
 								{
 									"key": "userId",
-									"value": ""
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Following",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"to_unfollow\": [\"badUserId\"]\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url}}/user/:userId/following",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"user",
-								":userId",
-								"following"
-							],
-							"variable": [
-								{
-									"key": "userId",
-									"value": ""
+									"value": "102"
 								}
 							]
 						}
