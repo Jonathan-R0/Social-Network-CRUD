@@ -1,5 +1,6 @@
 package com.uba.ejercicio.controllers;
 
+import com.uba.ejercicio.configuration.UserCheckMiddleware;
 import com.uba.ejercicio.dto.*;
 import com.uba.ejercicio.services.TokenService;
 import com.uba.ejercicio.services.UserService;
@@ -17,6 +18,9 @@ public class UserController {
 
     @Autowired
     private TokenService tokenService;
+
+    @Autowired
+    private UserCheckMiddleware userCheckMiddleware;
 
     @PostMapping
     public ResponseEntity<Void> createUser(@RequestBody @Valid UserDto user) {
@@ -40,27 +44,33 @@ public class UserController {
 
     @PostMapping("/{userId}/follower")
     public ResponseEntity<Void> followUser(
+            @RequestHeader("Authorization") String tokenHeader,
             @PathVariable("userId") Long followerId,
             @RequestBody @Valid FollowRequestDto followRequest
         ) {
+        userCheckMiddleware.checkUser(followerId, tokenHeader);
         userService.followUser(followerId, followRequest.getFollow());
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{userId}/following")
     public ResponseEntity<Void> deleteFollowing(
+            @RequestHeader("Authorization") String tokenHeader,
             @PathVariable("userId") Long followerId,
             @RequestBody @Valid UnfollowRequestDto unfollowRequest
     ) {
+        userCheckMiddleware.checkUser(followerId, tokenHeader);
         userService.unfollowUser(followerId, unfollowRequest.getUnfollow());
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{userId}/follower")
     public ResponseEntity<Void> deleteFollower(
+            @RequestHeader("Authorization") String tokenHeader,
             @PathVariable("userId") Long followedId,
             @RequestBody @Valid UnfollowRequestDto unfollowRequest
     ) {
+        userCheckMiddleware.checkUser(followedId, tokenHeader);
         userService.unfollowUser(unfollowRequest.getUnfollow(), followedId);
         return ResponseEntity.ok().build();
     }
