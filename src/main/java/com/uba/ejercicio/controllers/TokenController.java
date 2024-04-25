@@ -1,5 +1,6 @@
 package com.uba.ejercicio.controllers;
 
+import com.uba.ejercicio.configuration.UserCheckMiddleware;
 import com.uba.ejercicio.dto.LoginResponseDto;
 import com.uba.ejercicio.dto.UserDto;
 import com.uba.ejercicio.exceptions.TokenException;
@@ -15,11 +16,10 @@ public class TokenController {
     @Autowired
     private TokenService tokenService;
 
-    private static final int BEARER_LENGTH = "Bearer ".length();
+    @Autowired
+    private UserCheckMiddleware userCheckMiddleware;
 
-    private void checkTokenHeader(String tokenHeader) {
-        if (tokenHeader == null || !tokenHeader.startsWith("Bearer ")) throw new TokenException("Invalid token.");
-    }
+    private static final int BEARER_LENGTH = "Bearer ".length();
 
     @PostMapping(value="/login")
     public ResponseEntity<LoginResponseDto> login(@RequestBody UserDto credentials) {
@@ -29,13 +29,13 @@ public class TokenController {
     @PostMapping(value="/refresh-token")
     public ResponseEntity<LoginResponseDto> refreshToken(@RequestHeader("Authorization") String tokenHeader)
             throws TokenException {
-        checkTokenHeader(tokenHeader);
+        userCheckMiddleware.checkTokenHeader(tokenHeader);
         return ResponseEntity.ok(tokenService.refreshToken(tokenHeader.substring(BEARER_LENGTH)));
     }
 
     @PostMapping(value="/logout")
     public ResponseEntity<Void> logout(@RequestHeader("Authorization") String tokenHeader) {
-        checkTokenHeader(tokenHeader);
+        userCheckMiddleware.checkTokenHeader(tokenHeader);
         tokenService.destroySession(tokenService.getEmailFromHeader(tokenHeader));
         return ResponseEntity.ok().build();
     }
