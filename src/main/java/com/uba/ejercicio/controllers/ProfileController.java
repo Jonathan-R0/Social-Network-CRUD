@@ -9,9 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RestController
-@RequestMapping("api/v1/user/{userId}/profile")
+@RequestMapping("api/v1/user")
 public class ProfileController {
 
     @Autowired
@@ -20,7 +22,7 @@ public class ProfileController {
     @Autowired
     private UserCheckMiddleware userCheckMiddleware;
 
-    @GetMapping
+    @GetMapping("/{userId}/profile")
     public ResponseEntity<ProfileResponseDto> getProfile(
             @RequestHeader("Authorization") String tokenHeader,
             @PathVariable Long userId
@@ -30,7 +32,7 @@ public class ProfileController {
         return ResponseEntity.ok(profile.profileToDTO());
     }
 
-    @PostMapping
+    @PostMapping("/{userId}/profile")
     public ResponseEntity<Void> createProfile(
             @RequestHeader("Authorization") String tokenHeader,
             @PathVariable Long userId,
@@ -41,7 +43,7 @@ public class ProfileController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping
+    @PutMapping("/{userId}/profile")
     public ResponseEntity<Void> modifyProfile(
             @RequestHeader("Authorization") String tokenHeader,
             @PathVariable Long userId,
@@ -51,4 +53,10 @@ public class ProfileController {
         profileService.modifyProfile(userId, profileInformation);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/profile")
+    public ResponseEntity<List<ProfileResponseDto>> getProfiles() {
+        return ResponseEntity.ok(profileService.getUserProfiles());
+    }
+
 }

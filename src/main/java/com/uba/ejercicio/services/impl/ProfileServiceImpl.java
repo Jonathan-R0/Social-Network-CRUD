@@ -84,4 +84,9 @@ public class ProfileServiceImpl implements ProfileService {
         profile.setHobbies(getHobbies(profileInformation.getHobbies()));
         profileRepository.save(profile);
     }
+
+    @Override
+    public List<ProfileResponseDto> getUserProfiles() {
+        return profileRepository.findAll().stream().map(Profile::profileToDTO).collect(Collectors.toList());
+    }
 }
