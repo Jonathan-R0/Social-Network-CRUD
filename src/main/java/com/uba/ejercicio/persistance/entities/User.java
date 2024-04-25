@@ -36,4 +36,10 @@ public class User {
     )
     private List<User> follows; // follower -> followed
 
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private ConfirmationToken confirmationToken;
+
+    private boolean Confirmated;
+
 }

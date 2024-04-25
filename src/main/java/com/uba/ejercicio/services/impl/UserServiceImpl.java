@@ -4,7 +4,9 @@ import com.uba.ejercicio.dto.UserDto;
 import com.uba.ejercicio.exceptions.PasswordResetException;
 import com.uba.ejercicio.exceptions.UnavailableRoleException;
 import com.uba.ejercicio.exceptions.UserNotFoundException;
+import com.uba.ejercicio.persistance.entities.ConfirmationToken;
 import com.uba.ejercicio.persistance.entities.User;
+import com.uba.ejercicio.persistance.repositories.ConfirmationTokenRepository;
 import com.uba.ejercicio.persistance.repositories.RefreshTokenRepository;
 import com.uba.ejercicio.persistance.repositories.UserRepository;
 import com.uba.ejercicio.services.UserService;
@@ -35,19 +37,27 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private RefreshTokenRepository refreshTokenRepository;
 
+    @Autowired
+    private ConfirmationTokenRepository confirmationTokenRepository;
+
     private static final Set<String> VALID_ROLES = Set.of("ADMIN", "USER");
 
     @Override
     public User createUser(UserDto user) {
         if (!VALID_ROLES.contains(user.getRole())) throw new UnavailableRoleException(user.getRole());
-        return userRepository.save(
+        User user_return = userRepository.save(
                 User.builder()
-                    .email(user.getEmail())
-                    .role(user.getRole())
-                    .follows(new ArrayList<>())
-                    .password(passwordEncoder.encode(user.getPassword()))
-                    .build()
+                        .email(user.getEmail())
+                        .role(user.getRole())
+                        .follows(new ArrayList<>())
+                        .password(passwordEncoder.encode(user.getPassword()))
+                        .build()
         );
+
+        ConfirmationToken token = new ConfirmationToken(user_return);
+        confirmationTokenRepository.save(token);
+        return user_return;
+
     }
 
     @Override
