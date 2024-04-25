@@ -45,6 +45,7 @@ public class UserServiceImpl implements UserService {
                     .email(user.getEmail())
                     .role(user.getRole())
                     .follows(new ArrayList<>())
+                    .enabled(false)
                     .password(passwordEncoder.encode(user.getPassword()))
                     .build()
         );
@@ -79,6 +80,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateUser(User user) {
         userRepository.save(user);
+    }
+
+    @Override
+    public void validateAccount(Long userId) {
+        User user = getUserById(userId);
+        user.setEnabled(true);
+        updateUser(user);
     }
 
     private void deleteUserTokensAndUserFromEmail(String email) {
@@ -127,7 +135,7 @@ public class UserServiceImpl implements UserService {
         authorities.add(new SimpleGrantedAuthority(userEntity.getRole()));
 
         return new org.springframework.security.core.userdetails.User(userEntity.getEmail(), userEntity.getPassword(),
-                true, true, true, true, authorities);
+                userEntity.getEnabled(), true, true, true, authorities);
 
     }
 }
