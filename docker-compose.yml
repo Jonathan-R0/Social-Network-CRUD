@@ -1,0 +1,36 @@
+name: tp1
+services:
+  mysql:
+    container_name: tdd-mysql
+    networks:
+      - tdd-network
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=Password_123
+      - MYSQL_DATABASE=ejercicio
+    image: mysql:latest
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      timeout: 10s
+      retries: 5
+  tp1:
+    depends_on:
+      mysql:
+        condition: service_healthy
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - tdd-network
+    ports:
+      - 8080:8080
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://tdd-mysql:3306/ejercicio
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=Password_123
+    image: tp1:latest
+networks:
+  tdd-network:
+    external: true
+    name: tdd-network
