@@ -1,15 +1,5 @@
 # Trabajo Práctico 1
 
-## Integrantes
-
-```
-Jonathan David Rosenblatt 104105
-Azul Fuentes 102184
-Tomás González 108193
-Marco Natalini 108056
-Luis Waldman 79279
-```
-
 ## Iniciar el Servicio
 
 Primero se debe definir una red compartida entre los contenedores de Docker. Se crea con el siguiente comando:
